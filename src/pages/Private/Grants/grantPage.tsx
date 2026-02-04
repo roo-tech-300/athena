@@ -20,11 +20,12 @@ import Milestones from '../../../components/grants/Milestones'
 import Deliverables from '../../../components/grants/Deliverables'
 import Personnel from '../../../components/grants/Personnel'
 import Documents from '../../../components/grants/Documents'
+import PendingAccess from '../../../components/grants/PendingAccess'
 import { SidebarItem } from '../../../components/grants/grantLayout/SideBarItem'
-import { useGetUser } from '../../../hooks/useUser'
+import { useAuth } from '../../../useContext/context'
 import { useLogoutAccount } from '../../../hooks/useAuth'
 import Loader from '../../../components/ui/Loader'
-import { useGrant } from '../../../hooks/useGrants'
+import { useGrant, useGrantMembers } from '../../../hooks/useGrants'
 
 
 
@@ -37,6 +38,8 @@ export default function GrantPage() {
     // const [grant, setGrant] = useState<any>(null)
 
     const { data: grant, isLoading: grantLoading } = useGrant(id!)
+    const { data: members, isLoading: membersLoading } = useGrantMembers(id!)
+    const { user } = useAuth()
 
     const sidebarItems = [
         { label: 'Dashboard', icon: LayoutDashboard },
@@ -47,20 +50,6 @@ export default function GrantPage() {
         { label: 'Documents', icon: FileText },
     ]
 
-    // getGrant details
-    // useEffect(() => {
-    //     const fetchGrant = async () => {
-    //         try {
-    //             const grant = await getGrant(id!)
-    //             setGrant(grant)
-    //         } catch (error) {
-    //             console.error(error)
-    //         }
-    //     }
-    //     fetchGrant()
-    // }, [id])
-
-    const { data: user } = useGetUser()
     const { mutateAsync: logoutMutation } = useLogoutAccount()
 
     // log out
@@ -76,7 +65,16 @@ export default function GrantPage() {
     // sidebar width
     const sidebarWidth = isSidebarVisible ? '260px' : '80px'
 
-    if (!grant || grantLoading) return <Loader fullPage size="xl" label="Loading Grant Workspace..." />
+    if (grantLoading || membersLoading) return <Loader fullPage size="xl" label="Loading Grant Workspace..." />
+    if (!grant) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Grant not found</div>
+
+    const myMembership = members?.find((m: any) =>
+        (m.user?.$id === user?.id || m.user === user?.id)
+    );
+
+    if (myMembership?.status === 'Pending') {
+        return <PendingAccess grantName={grant.name} />
+    }
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--color-gray-50)' }}>

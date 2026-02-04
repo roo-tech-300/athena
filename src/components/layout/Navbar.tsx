@@ -46,10 +46,6 @@ export default function Navbar() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-8)' }}>
                     {location.pathname !== '/portal' && (
                         <>
-                            <div style={{ display: 'flex', gap: 'var(--space-6)' }}>
-                                <Link to="/portal" style={{ color: 'var(--color-gray-700)', fontWeight: 'var(--font-medium)' }}>Portal</Link>
-                                <a href="#features" style={{ color: 'var(--color-gray-700)', fontWeight: 'var(--font-medium)' }}>Features</a>
-                            </div>
                             <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
                                 <Link to="/login">
                                     <Button variant="ghost">Log In</Button>

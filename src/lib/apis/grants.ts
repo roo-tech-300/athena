@@ -1,6 +1,8 @@
 import { generateGrantCode } from "../../utils/grant"
 import { database, ID, Query } from "../appwrite"
 
+type Role = 'Principal Investigator' | 'Researcher' | 'Reviewer' | 'Finance Officer';
+
 export const createGrant = async (
     userId: string,
     title: string,
@@ -22,7 +24,7 @@ export const createGrant = async (
                 code
             }
         )
-        await createGrantMember(grant.$id, userId, ['Owner'], "Accepted")
+        await createGrantMember(grant.$id, userId, ['Principal Investigator'], "Accepted")
         return grant
     } catch (error) {
         console.error(error)
@@ -79,7 +81,7 @@ export const joinGrantByCode = async (code: string, userId: string) => {
             throw new Error("ALREADY_MEMBER")
         }
 
-        await createGrantMember(grantId, userId, ["Member"])
+        await createGrantMember(grantId, userId, ["Researcher"], "Pending")
         return grant
     } catch (error) {
         console.error(error)
@@ -88,7 +90,7 @@ export const joinGrantByCode = async (code: string, userId: string) => {
 }
 
 
-export const createGrantMember = async (grantId: string, userId: string, role?: string[], status?: string) => {
+export const createGrantMember = async (grantId: string, userId: string, role?: Role[], status?: string) => {
 
     try {
         const grantMember = await database.createRow(
@@ -98,6 +100,24 @@ export const createGrantMember = async (grantId: string, userId: string, role?: 
             {
                 grant: grantId,
                 user: userId,
+                role,
+                status
+            }
+        )
+        return grantMember
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const updateGrantMember = async (memberId: string, role?: Role[], status?: "Accepted" | "Pending" | "Rejected") => {
+    try {
+        const grantMember = await database.updateRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_MEMBER_COLLECTION_ID,
+            memberId,
+            {
                 role,
                 status
             }
@@ -199,13 +219,13 @@ export const getGrantMembers = async (grantId: string) => {
         )
 
         const grantMembers = membersRes.rows;
+        if (grantMembers.length === 0) return [];
 
-        // Fetch user data for each member
+        // Fetch user data for each member to ensure we have name/email
         const userIdsToFetch = new Set<string>();
         grantMembers.forEach((m: any) => {
-            if (typeof m.user === 'string') {
-                userIdsToFetch.add(m.user);
-            }
+            const userId = typeof m.user === 'object' ? m.user?.$id : m.user;
+            if (userId) userIdsToFetch.add(userId);
         });
 
         if (userIdsToFetch.size > 0) {
@@ -220,24 +240,20 @@ export const getGrantMembers = async (grantId: string) => {
                 usersMap.set(u.$id, u);
             });
 
-            // Merge back
-            const populatedMembers = grantMembers.map((m: any) => {
-                if (typeof m.user === 'string') {
-                    const userData = usersMap.get(m.user);
-                    return {
-                        ...m,
-                        user: userData || { $id: m.user, name: 'Unknown User' }
-                    };
-                }
-                return m;
+            // Merge user profiles into the member records
+            return grantMembers.map((m: any) => {
+                const userId = typeof m.user === 'object' ? m.user?.$id : m.user;
+                const userData = usersMap.get(userId);
+                return {
+                    ...m,
+                    user: userData || (typeof m.user === 'object' ? m.user : { $id: userId, name: 'Unknown User' })
+                };
             });
-
-            return populatedMembers;
         }
 
         return grantMembers
     } catch (error) {
-        console.error(error)
+        console.error("Error fetching grant members:", error)
         throw error
     }
 }

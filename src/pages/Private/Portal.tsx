@@ -6,7 +6,7 @@ import Modal from '../../components/ui/Modal'
 import { Layers, Activity, Clock, Calendar, User, Info } from 'lucide-react'
 import Loader from '../../components/ui/Loader'
 import { toast } from 'react-toastify'
-import { useGetUser } from '../../hooks/useUser'
+import { useAuth } from '../../useContext/context'
 import { useCreateGrant, useJoinGrantByCode, useUserGrants } from '../../hooks/useGrants'
 
 interface Grant {
@@ -21,8 +21,8 @@ interface Grant {
 
 export default function Portal() {
     const navigate = useNavigate()
-    const { data: user } = useGetUser()
-    const { data: grantsData, isLoading: grantsLoading, refetch: refreshGrants } = useUserGrants(user?.$id || '')
+    const { user } = useAuth()
+    const { data: grantsData, isLoading: grantsLoading, refetch: refreshGrants } = useUserGrants(user?.id || '')
 
     // Format grants for the UI
     const grants = (grantsData || []).map((g: any) => ({
@@ -63,7 +63,7 @@ export default function Portal() {
     const handleCreateGrant = async () => {
         if (!user) return;
         try {
-            await createGrant({ userId: user.$id, title, type, expectedFunding: 0, description })
+            await createGrant({ userId: user.id, title, type, expectedFunding: 0, description })
             await refreshGrants()
             toast.success("Grant created successfully")
             setIsCreateModalOpen(false)
@@ -77,7 +77,7 @@ export default function Portal() {
     const handleJoinGrantByCode = async () => {
         if (!user) return;
         try {
-            await joinGrant({ code, userId: user.$id })
+            await joinGrant({ code, userId: user.id })
             await refreshGrants()
             toast.success("Joined grant successfully")
             setIsJoinModalOpen(false)

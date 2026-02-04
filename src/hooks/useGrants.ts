@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity } from "../lib/apis/grants";
+import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember } from "../lib/apis/grants";
 import { queryClient } from "../lib/react-query";
 
 export function useUserGrants(userId: string) {
@@ -77,5 +77,47 @@ export function useGetGrantMembers(grantId: string) {
         queryFn: () => getGrantMembers(grantId),
         enabled: !!grantId,
         staleTime: 2 * 60 * 1000
+    })
+}
+
+export function useUpdateGrantMember() {
+    return useMutation({
+        mutationFn: ({ memberId, role, status }: { memberId: string, role?: any, status?: any, grantId: string }) =>
+            updateGrantMember(memberId, role, status),
+        onMutate: async (variables) => {
+            // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+            await queryClient.cancelQueries({ queryKey: ['grantMembers', variables.grantId] });
+
+            // Snapshot the previous value
+            const previousMembers = queryClient.getQueryData(['grantMembers', variables.grantId]);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['grantMembers', variables.grantId], (old: any) => {
+                if (!old) return old;
+                return old.map((member: any) => {
+                    if (member.$id === variables.memberId) {
+                        return {
+                            ...member,
+                            ...(variables.role !== undefined ? { role: variables.role } : {}),
+                            ...(variables.status !== undefined ? { status: variables.status } : {})
+                        };
+                    }
+                    return member;
+                });
+            });
+
+            // Return a context object with the snapshotted value
+            return { previousMembers, grantId: variables.grantId };
+        },
+        onError: (_err, _variables, context: any) => {
+            // If the mutation fails, use the context returned from onMutate to roll back
+            if (context?.previousMembers) {
+                queryClient.setQueryData(['grantMembers', context.grantId], context.previousMembers);
+            }
+        },
+        onSettled: (_data, _error, variables) => {
+            // Always refetch after error or success to ensure we have the truth from the server
+            queryClient.invalidateQueries({ queryKey: ['grantMembers', variables.grantId] });
+        }
     })
 }

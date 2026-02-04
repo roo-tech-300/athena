@@ -11,10 +11,10 @@ export function useGetUser() {
     })
 }
 
-export function useGetUserById(id: string) {
+export function useGetUserById(id?: string) {
     return useQuery({
         queryKey: ['user', id],
-        queryFn: () => getUserById(id),
+        queryFn: () => getUserById(id!),
         staleTime: 1000 * 60 * 5,
         retry: 1,
         refetchOnWindowFocus: false,
