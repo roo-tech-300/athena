@@ -20,7 +20,7 @@ interface TaskType {
     description?: string
     status: 'Progress' | 'Completed'
     dueDate: string
-    assignedMembers: string[] // Changed to string[] to store member IDs
+    assignedMembers: { memberId: string }[]
 }
 
 interface GrantMember {
@@ -72,7 +72,14 @@ const formatDate = (dateString: string) => {
     })
 }
 
-export default function Deliverables({ grant }: { grant?: any }) {
+export default function Deliverables({ grant, myMembership }: { grant?: any, myMembership?: any }) {
+    const roles = myMembership?.role || [];
+    const isPI = roles.includes('Principal Investigator');
+    const isResearcher = roles.includes('Researcher');
+    const isFO = roles.includes('Finance Officer');
+    const isRev = roles.includes('Reviewer');
+    const myMemberId = myMembership?.$id;
+
     const { addToast } = useToast()
     const { data: deliverables = [], isLoading: deliverablesLoading } = useGetDeliverables(grant?.$id || '')
     const { data: grantMembers = [] as GrantMember[] } = useGrantMembers(grant?.$id || '')
@@ -157,8 +164,12 @@ export default function Deliverables({ grant }: { grant?: any }) {
 
     if (!grant || deliverablesLoading) return <Loader size="xl" label="Accessing deliverables..." />
 
-    const submittedCount = deliverables.filter(d => d.status === 'Completed').length
-    const completionRate = deliverables.length > 0 ? Math.round((submittedCount / deliverables.length) * 100) : 0
+    const filteredDeliverables = (!isPI && !isRev)
+        ? deliverables.filter(d => d.tasks?.some((t: TaskType) => t.assignedMembers?.some((m: any) => (m.$id === myMemberId || m.$id === myMemberId))))
+        : deliverables;
+
+    const submittedCount = filteredDeliverables.filter(d => d.status === 'Completed').length
+    const completionRate = filteredDeliverables.length > 0 ? Math.round((submittedCount / filteredDeliverables.length) * 100) : 0
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -198,7 +209,9 @@ export default function Deliverables({ grant }: { grant?: any }) {
             <div className="card-neumorphic" style={{ padding: '0' }}>
                 <div style={{ padding: 'var(--space-6)', borderBottom: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>Deliverables Schedule</h2>
-                    <Button variant="primary" size="sm" onClick={() => setIsAddModalOpen(true)}>+ Add Deliverable</Button>
+                    {isPI && (
+                        <Button variant="primary" size="sm" onClick={() => setIsAddModalOpen(true)}>+ Add Deliverable</Button>
+                    )}
                 </div>
 
                 <div style={{ overflowX: 'auto' }}>
@@ -211,7 +224,7 @@ export default function Deliverables({ grant }: { grant?: any }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {deliverables.map((d: DeliverableType) => (
+                            {filteredDeliverables.map((d: DeliverableType) => (
                                 <React.Fragment key={d.$id}>
                                     <tr
                                         style={{ borderBottom: '1px solid rgba(0,0,0,0.03)', cursor: 'pointer' }}
@@ -242,7 +255,7 @@ export default function Deliverables({ grant }: { grant?: any }) {
                                             </div>
                                         </td>
                                         <td style={{ padding: 'var(--space-4) var(--space-6)', textAlign: 'right' }}>
-                                            <MoreHorizontal size={18} color="var(--color-gray-300)" cursor="pointer" />
+                                            {isPI && <MoreHorizontal size={18} color="var(--color-gray-300)" cursor="pointer" />}
                                         </td>
                                     </tr>
                                     {expandedDeliverables.includes(d.$id) && (
@@ -251,11 +264,13 @@ export default function Deliverables({ grant }: { grant?: any }) {
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                         <h4 style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-gray-400)', textTransform: 'uppercase' }}>Sub-tasks</h4>
-                                                        <Button variant="ghost" size="sm" onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedDeliverable(d);
-                                                            setIsTaskModalOpen(true);
-                                                        }}>+ Add Task</Button>
+                                                        {isPI && (
+                                                            <Button variant="ghost" size="sm" onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSelectedDeliverable(d);
+                                                                setIsTaskModalOpen(true);
+                                                            }}>+ Add Task</Button>
+                                                        )}
                                                     </div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                         {(!d.tasks || d.tasks.length === 0) ? (
@@ -269,7 +284,8 @@ export default function Deliverables({ grant }: { grant?: any }) {
                                                                     </div>
                                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                                         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                                                                            {task.assignedMembers.slice(0, 3).map((memberId: string, i: number) => {
+                                                                            {task.assignedMembers?.slice(0, 3).map((assignment: any, i: number) => {
+                                                                                const memberId = typeof assignment === 'string' ? assignment : assignment.memberId;
                                                                                 const member = grantMembers.find((m: GrantMember) => m.$id === memberId);
                                                                                 return (
                                                                                     <div key={memberId} title={member?.user?.name || 'Unknown'} style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'var(--color-primary)', border: '2px solid white', marginLeft: i === 0 ? 0 : '-6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '9px', fontWeight: 700 }}>

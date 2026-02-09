@@ -74,7 +74,8 @@ const formatDate = (dateString: string) => {
     })
 }
 
-export default function Milestones({ grant }: { grant?: any }) {
+export default function Milestones({ grant, myMembership }: { grant?: any, myMembership?: any }) {
+    const isPI = myMembership?.role?.includes('Principal Investigator')
     const { addToast } = useToast()
     const { data: milestones = [], isLoading: milestonesLoading } = useGetMilestones(grant?.$id || '')
     const { mutateAsync: createMilestoneMutation, isPending: isCreatingMilestone } = useCreateMilestone()
@@ -194,7 +195,9 @@ export default function Milestones({ grant }: { grant?: any }) {
                             Track progress and manage project milestones
                         </p>
                     </div>
-                    <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>+ Add Milestone</Button>
+                    {isPI && (
+                        <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>+ Add Milestone</Button>
+                    )}
                 </div>
 
                 {/* Table */}

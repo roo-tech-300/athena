@@ -21,6 +21,7 @@ import Deliverables from '../../../components/grants/Deliverables'
 import Personnel from '../../../components/grants/Personnel'
 import Documents from '../../../components/grants/Documents'
 import PendingAccess from '../../../components/grants/PendingAccess'
+import GrantSettings from '../../../components/grants/GrantSettings'
 import { SidebarItem } from '../../../components/grants/grantLayout/SideBarItem'
 import { useAuth } from '../../../useContext/context'
 import { useLogoutAccount } from '../../../hooks/useAuth'
@@ -48,6 +49,7 @@ export default function GrantPage() {
         { label: 'Deliverables', icon: Send },
         { label: 'Personnel', icon: Users },
         { label: 'Documents', icon: FileText },
+        { label: 'Settings', icon: Settings },
     ]
 
     const { mutateAsync: logoutMutation } = useLogoutAccount()
@@ -71,6 +73,23 @@ export default function GrantPage() {
     const myMembership = members?.find((m: any) =>
         (m.user?.$id === user?.id || m.user === user?.id)
     );
+
+    const roles = myMembership?.role || [];
+    const isPI = roles.includes('Principal Investigator');
+    const isReviewer = roles.includes('Reviewer');
+    const isFO = roles.includes('Finance Officer');
+    const isResearcher = roles.includes('Researcher');
+
+    const filteredSidebarItems = sidebarItems.filter(item => {
+        if (isPI || isReviewer) return true;
+
+        const allowedTabs = ['Dashboard', 'Documents'];
+        if (isPI) allowedTabs.push('Settings');
+        if (isFO) allowedTabs.push('Budget tracker');
+        if (isResearcher) allowedTabs.push('Milestones', 'Deliverables', 'Personnel');
+
+        return allowedTabs.includes(item.label);
+    });
 
     if (myMembership?.status === 'Pending') {
         return <PendingAccess grantName={grant.name} />
@@ -116,7 +135,7 @@ export default function GrantPage() {
                 </div>
 
                 <nav style={{ flex: 1 }}>
-                    {sidebarItems.map((item) => (
+                    {filteredSidebarItems.map((item) => (
                         <SidebarItem
                             key={item.label}
                             icon={item.icon}
@@ -188,7 +207,11 @@ export default function GrantPage() {
                         <button className="btn-ghost" style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer' }}>
                             <Bell size={20} />
                         </button>
-                        <button className="btn-ghost" style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer' }}>
+                        <button
+                            className="btn-ghost"
+                            style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer' }}
+                            onClick={() => setActiveTab('Settings')}
+                        >
                             <Settings size={20} />
                         </button>
                         <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-full)', background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 'var(--text-xs)' }}>
@@ -209,17 +232,19 @@ export default function GrantPage() {
                     </div>
 
                     {activeTab === 'Dashboard' ? (
-                        <Dashboard grant={grant} />
+                        <Dashboard grant={grant} myMembership={myMembership} />
                     ) : activeTab === 'Budget tracker' ? (
-                        <BudgetTracker grant={grant} />
+                        <BudgetTracker grant={grant} myMembership={myMembership} />
                     ) : activeTab === 'Milestones' ? (
-                        <Milestones grant={grant} />
+                        <Milestones grant={grant} myMembership={myMembership} />
                     ) : activeTab === 'Deliverables' ? (
-                        <Deliverables grant={grant} />
+                        <Deliverables grant={grant} myMembership={myMembership} />
                     ) : activeTab === 'Personnel' ? (
-                        <Personnel grant={grant} />
+                        <Personnel grant={grant} myMembership={myMembership} />
                     ) : activeTab === 'Documents' ? (
-                        <Documents grant={grant} />
+                        <Documents grant={grant} myMembership={myMembership} />
+                    ) : activeTab === 'Settings' ? (
+                        <GrantSettings grant={grant} isPI={isPI} />
                     ) : (
                         <div className="card-neumorphic" style={{ minHeight: '500px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <div style={{ textAlign: 'center' }}>

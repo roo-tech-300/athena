@@ -10,11 +10,12 @@ export interface Toast {
     message: string
     type: ToastType
     duration?: number
+    onClick?: () => void
 }
 
 interface ToastContextType {
     toasts: Toast[]
-    addToast: (message: string, type: ToastType, duration?: number) => void
+    addToast: (message: string, type: ToastType, duration?: number, onClick?: () => void) => void
     removeToast: (id: string) => void
 }
 
@@ -67,6 +68,12 @@ const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
     return (
         <div
             className="glass"
+            onClick={() => {
+                if (toast.onClick) {
+                    toast.onClick()
+                    handleRemove()
+                }
+            }}
             style={{
                 display: 'flex',
                 alignItems: 'flex-start',
@@ -82,7 +89,8 @@ const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
                 boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
                 animation: isExiting ? 'slideOut 0.3s ease-in forwards' : 'slideIn 0.3s ease-out forwards',
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                cursor: toast.onClick ? 'pointer' : 'default'
             }}
         >
             <div style={{ flexShrink: 0, marginTop: '2px' }}>
@@ -94,7 +102,10 @@ const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
                 </p>
             </div>
             <button
-                onClick={handleRemove}
+                onClick={(e) => {
+                    e.stopPropagation()
+                    handleRemove()
+                }}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -128,9 +139,9 @@ const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const [toasts, setToasts] = useState<Toast[]>([])
 
-    const addToast = useCallback((message: string, type: ToastType, duration = 5000) => {
+    const addToast = useCallback((message: string, type: ToastType, duration = 5000, onClick?: () => void) => {
         const id = Math.random().toString(36).substring(2, 9)
-        setToasts(prev => [...prev, { id, message, type, duration }])
+        setToasts(prev => [...prev, { id, message, type, duration, onClick }])
     }, [])
 
     const removeToast = useCallback((id: string) => {

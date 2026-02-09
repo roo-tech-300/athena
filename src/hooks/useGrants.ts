@@ -1,6 +1,34 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember } from "../lib/apis/grants";
+import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember, getActivities, updateGrant, deleteGrant } from "../lib/apis/grants";
 import { queryClient } from "../lib/react-query";
+
+export function useActivities(grantId: string) {
+    return useQuery({
+        queryKey: ['activities', grantId],
+        queryFn: () => getActivities(grantId),
+        enabled: !!grantId,
+        staleTime: 1 * 60 * 1000
+    })
+}
+
+export function useUpdateGrant() {
+    return useMutation({
+        mutationFn: ({ grantId, data }: { grantId: string, data: any }) => updateGrant(grantId, data),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['grant', variables.grantId] })
+            queryClient.invalidateQueries({ queryKey: ['grants'] })
+        }
+    })
+}
+
+export function useDeleteGrant() {
+    return useMutation({
+        mutationFn: (grantId: string) => deleteGrant(grantId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['grants'] })
+        }
+    })
+}
 
 export function useUserGrants(userId: string) {
     return useQuery({

@@ -257,3 +257,58 @@ export const getGrantMembers = async (grantId: string) => {
         throw error
     }
 }
+export const getActivities = async (grantId: string) => {
+    try {
+        const res = await database.listRows(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_ACTIVITY_ID,
+            [Query.equal("grant", grantId), Query.orderDesc("$createdAt"), Query.limit(10)]
+        )
+        return res.rows
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const updateGrant = async (grantId: string, data: any) => {
+    try {
+        const res = await database.updateRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_COLLECTION_ID,
+            grantId,
+            data
+        )
+        return res
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const deleteGrant = async (grantId: string) => {
+    try {
+        const res = await database.deleteRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_COLLECTION_ID,
+            grantId
+        )
+        // Also delete all members
+        const members = await database.listRows(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_MEMBER_COLLECTION_ID,
+            [Query.equal("grant", grantId)]
+        )
+        for (const member of members.rows) {
+            await database.deleteRow(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_APPWRITE_GRANT_MEMBER_COLLECTION_ID,
+                member.$id
+            )
+        }
+        return res
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}

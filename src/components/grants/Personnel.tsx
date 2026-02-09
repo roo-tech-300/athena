@@ -55,7 +55,7 @@ const getRoleConfig = (role: Role) => {
     }
 }
 
-export default function Personnel({ grant }: { grant?: any }) {
+export default function Personnel({ grant, myMembership }: { grant?: any, myMembership?: any }) {
     const [activeTab, setActiveTab] = useState<'Accepted' | 'Pending'>('Accepted');
     const { user: currentUser } = useAuth();
     const { data: members, isLoading: membersLoading } = useGrantMembers(grant?.$id);
@@ -77,11 +77,7 @@ export default function Personnel({ grant }: { grant?: any }) {
         return 0;
     });
 
-    // Check if the current user is a Principal Investigator
-    const isPI = rawAccepted.some((m: any) =>
-        (m.user?.$id === currentUser?.id || m.user === currentUser?.id) &&
-        m.role?.includes('Principal Investigator')
-    );
+    const isPI = myMembership?.role?.includes('Principal Investigator');
 
     const handleUpdateStatus = async (memberId: string, status: 'Accepted' | 'Rejected') => {
         try {
@@ -143,38 +139,40 @@ export default function Personnel({ grant }: { grant?: any }) {
                 >
                     Accepted
                 </button>
-                <button
-                    onClick={() => setActiveTab('Pending')}
-                    style={{
-                        padding: '8px 20px',
-                        borderRadius: 'var(--radius-md)',
-                        border: 'none',
-                        background: activeTab === 'Pending' ? 'white' : 'transparent',
-                        color: activeTab === 'Pending' ? 'var(--color-warning)' : 'var(--color-gray-500)',
-                        fontWeight: 600,
-                        fontSize: 'var(--text-sm)',
-                        cursor: 'pointer',
-                        boxShadow: activeTab === 'Pending' ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
-                        transition: 'all 0.2s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}
-                >
-                    Pending
-                    {pendingMembers.length > 0 && (
-                        <span style={{
-                            background: 'var(--color-warning)',
-                            color: 'white',
-                            padding: '2px 8px',
-                            borderRadius: '10px',
-                            fontSize: '10px',
-                            fontWeight: 700
-                        }}>
-                            {pendingMembers.length}
-                        </span>
-                    )}
-                </button>
+                {isPI && (
+                    <button
+                        onClick={() => setActiveTab('Pending')}
+                        style={{
+                            padding: '8px 20px',
+                            borderRadius: 'var(--radius-md)',
+                            border: 'none',
+                            background: activeTab === 'Pending' ? 'white' : 'transparent',
+                            color: activeTab === 'Pending' ? 'var(--color-warning)' : 'var(--color-gray-500)',
+                            fontWeight: 600,
+                            fontSize: 'var(--text-sm)',
+                            cursor: 'pointer',
+                            boxShadow: activeTab === 'Pending' ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}
+                    >
+                        Pending
+                        {pendingMembers.length > 0 && (
+                            <span style={{
+                                background: 'var(--color-warning)',
+                                color: 'white',
+                                padding: '2px 8px',
+                                borderRadius: '10px',
+                                fontSize: '10px',
+                                fontWeight: 700
+                            }}>
+                                {pendingMembers.length}
+                            </span>
+                        )}
+                    </button>
+                )}
             </div>
 
             {activeTab === 'Accepted' ? (
