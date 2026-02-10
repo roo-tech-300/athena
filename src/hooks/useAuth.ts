@@ -4,7 +4,7 @@ import { queryClient } from "../lib/react-query"
 
 export const useCreateAccount = () => {
     return useMutation({
-        mutationFn: ({ firstName, lastName, email, password }: any) => createAccount(firstName, lastName, email, password),
+        mutationFn: ({ title, firstName, lastName, email, password }: any) => createAccount(title, firstName, lastName, email, password),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] })
         }

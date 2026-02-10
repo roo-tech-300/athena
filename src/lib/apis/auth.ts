@@ -1,21 +1,23 @@
 import { account, database, ID } from "../appwrite"
 
-export const createAccount = async (firstName: string, lastName: string, email: string, password: string) =>{
+export const createAccount = async (title: string, firstName: string, lastName: string, email: string, password: string) => {
     try {
+        const fullName = `${title} ${firstName} ${lastName}`
         const user = await account.create(
             ID.unique(),
             email,
             password,
-            `${firstName} ${lastName}`
+            fullName
         )
         const dbUser = await database.createRow(
             import.meta.env.VITE_APPWRITE_DATABASE_ID,
             import.meta.env.VITE_APPWRITE_USERS_COLLECTION_ID,
             user.$id,
             {
-                name: `${firstName} ${lastName}`,
+                name: fullName,
                 email,
-                password,  
+                password,
+                title
             }
         )
 

@@ -7,6 +7,7 @@ import { useToast } from '../../components/ui/Toast'
 
 export default function SignUp() {
     const navigate = useNavigate();
+    const [title, setTitle] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -17,8 +18,12 @@ export default function SignUp() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!title) {
+            addToast("Please select a title", "warning");
+            return;
+        }
         try {
-            await signupMutation({ firstName, lastName, email, password });
+            await signupMutation({ title, firstName, lastName, email, password });
             navigate('/portal');
         } catch (error) {
             console.error("Error creating account:", error);
@@ -83,6 +88,27 @@ export default function SignUp() {
                         </div>
 
                         <form onSubmit={(e) => handleSubmit(e)}>
+                            <div className="input-group">
+                                <label className="input-label">Academic Title</label>
+                                <select
+                                    className="input-field"
+                                    style={{ background: 'white', cursor: 'pointer' }}
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                >
+                                    <option value="" disabled>Select Title</option>
+                                    <option value="Prof.">Prof.</option>
+                                    <option value="Dr.">Dr.</option>
+                                    <option value="Engr.">Engr.</option>
+                                    <option value="Mr.">Mr.</option>
+                                    <option value="Mrs.">Mrs.</option>
+                                    <option value="Ms.">Ms.</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Barr.">Barr.</option>
+                                </select>
+                            </div>
+
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
                                 <div className="input-group">
                                     <label className="input-label">First Name</label>
@@ -90,12 +116,12 @@ export default function SignUp() {
                                         <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gray-400)' }}>
                                             <User size={16} />
                                         </span>
-                                        <input type="text" placeholder="Dr. Jane" className="input-field" style={{ paddingLeft: '40px' }} value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                                        <input type="text" placeholder="Jane" className="input-field" style={{ paddingLeft: '40px' }} value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
                                     </div>
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">Last Name</label>
-                                    <input type="text" placeholder="Doe" className="input-field" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                                    <input type="text" placeholder="Doe" className="input-field" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
                                 </div>
                             </div>
 

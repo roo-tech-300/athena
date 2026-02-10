@@ -365,7 +365,16 @@ export default function Portal() {
                 </div>
                 <div className="input-group">
                     <label className="input-label">Initial Funding (₦)</label>
-                    <input type="number" value={expectedFunding} onChange={(e) => setExpectedFunding(Number(e.target.value))} className="input-field" />
+                    <input
+                        type="text"
+                        value={expectedFunding === 0 ? '' : expectedFunding.toLocaleString()}
+                        onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '');
+                            setExpectedFunding(val ? parseInt(val, 10) : 0);
+                        }}
+                        className="input-field"
+                        placeholder="0"
+                    />
                 </div>
                 <div className="input-group">
                     <label className="input-label">Project Description</label>
@@ -388,7 +397,16 @@ export default function Portal() {
                 </div>
                 <div className="input-group">
                     <label className="input-label">Total Funding (₦)</label>
-                    <input type="number" value={expectedFunding} onChange={(e) => setExpectedFunding(Number(e.target.value))} className="input-field" />
+                    <input
+                        type="text"
+                        value={expectedFunding === 0 ? '' : expectedFunding.toLocaleString()}
+                        onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '');
+                            setExpectedFunding(val ? parseInt(val, 10) : 0);
+                        }}
+                        className="input-field"
+                        placeholder="0"
+                    />
                 </div>
                 <div className="input-group">
                     <label className="input-label">Project Description</label>

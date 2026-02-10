@@ -27,6 +27,7 @@ import { useAuth } from '../../../useContext/context'
 import { useLogoutAccount } from '../../../hooks/useAuth'
 import Loader from '../../../components/ui/Loader'
 import { useGrant, useGrantMembers } from '../../../hooks/useGrants'
+import { getUserInitials } from '../../../utils/user'
 
 
 
@@ -222,11 +223,7 @@ export default function GrantPage() {
                             <Settings size={20} />
                         </button>
                         <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-full)', background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 'var(--text-xs)' }}>
-                            {
-                                user?.name
-                                    ? user.name.charAt(0).toUpperCase() + (user.name.charAt(1)?.toUpperCase() || '')
-                                    : '?'
-                            }
+                            {getUserInitials(user)}
                         </div>
                     </div>
                 </header>
@@ -235,7 +232,11 @@ export default function GrantPage() {
                 <div style={{ padding: 'var(--space-8)', flex: 1 }}>
                     <div style={{ marginBottom: 'var(--space-8)' }}>
                         <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
-                        <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: {grant.name}</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+                            <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
+                            <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                            <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
+                        </div>
                     </div>
 
                     {activeTab === 'Dashboard' ? (

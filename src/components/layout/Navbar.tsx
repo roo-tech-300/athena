@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
 import { useAuth } from '../../useContext/context'
 import { useLogoutAccount } from '../../hooks/useAuth'
+import { getUserInitials } from '../../utils/user'
 
 export default function Navbar() {
     const location = useLocation()
@@ -75,7 +76,7 @@ export default function Navbar() {
                                     fontWeight: 700,
                                     fontSize: 'var(--text-xs)'
                                 }}>
-                                    {user.name?.charAt(0).toUpperCase()}
+                                    {getUserInitials(user)}
                                 </div>
                                 <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)' }}>
                                     {user.name}

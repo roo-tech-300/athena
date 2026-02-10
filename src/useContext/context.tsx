@@ -6,6 +6,7 @@ export type User = {
     id: string;
     email: string;
     name: string;
+    title?: string;
 }
 
 export type AuthContextType = {
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     id: dbUser.$id,
                     email: dbUser.email,
                     name: dbUser.name,
+                    title: dbUser.title,
                 } as User);
             } else {
                 setUser(null);
