@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Save, Trash2, AlertTriangle, ShieldCheck } from 'lucide-react'
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
+import Modal from '../ui/Modal'
 import { useUpdateGrant, useDeleteGrant } from '../../hooks/useGrants'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
@@ -65,41 +66,48 @@ export default function GrantSettings({ grant, isPI }: { grant: any, isPI: boole
 
                 <form onSubmit={handleUpdate} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>
-                        <div>
-                            <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Grant Name</label>
+                        <div className="input-group">
+                            <label className="input-label">Grant Name</label>
                             <input
                                 required
-                                style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-gray-200)', outline: 'none' }}
+                                className="input-field"
                                 value={formData.name}
                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                             />
                         </div>
-                        <div>
-                            <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Grant Type</label>
-                            <input
-                                required
-                                style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-gray-200)', outline: 'none' }}
+                        <div className="input-group">
+                            <label className="input-label">Grant Type</label>
+                            <select
+                                className="input-field"
                                 value={formData.type}
                                 onChange={e => setFormData({ ...formData, type: e.target.value })}
-                            />
+                            >
+                                <option>Research</option>
+                                <option>Infrastructure</option>
+                                <option>Fellowship</option>
+                                <option>Equipment</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div>
-                        <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Description</label>
+                    <div className="input-group">
+                        <label className="input-label">Project Description</label>
                         <textarea
-                            style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-gray-200)', outline: 'none', minHeight: '120px' }}
+                            className="input-field"
+                            rows={3}
+                            style={{ resize: 'none', minHeight: '100px' }}
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                         />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>
-                        <div>
-                            <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Expected Funding (₦)</label>
+                        <div className="input-group">
+                            <label className="input-label">Total Funding (₦)</label>
                             <input
                                 type="text"
-                                style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-gray-200)', outline: 'none' }}
+                                className="input-field"
+                                placeholder="0"
                                 value={formData.expectedFunding === 0 ? '' : formData.expectedFunding.toLocaleString()}
                                 onChange={e => {
                                     const val = e.target.value.replace(/\D/g, '');
@@ -107,16 +115,35 @@ export default function GrantSettings({ grant, isPI }: { grant: any, isPI: boole
                                 }}
                             />
                         </div>
-                        <div>
-                            <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Current Completion (%)</label>
-                            <input
-                                type="number"
-                                max="100"
-                                min="0"
-                                style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-gray-200)', outline: 'none' }}
-                                value={formData.completion}
-                                onChange={e => setFormData({ ...formData, completion: Number(e.target.value) })}
-                            />
+                        <div className="input-group">
+                            <label className="input-label">Project Completion (%)</label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type="number"
+                                    max="100"
+                                    min="0"
+                                    className="input-field"
+                                    value={formData.completion}
+                                    onChange={e => setFormData({ ...formData, completion: Number(e.target.value) })}
+                                />
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '-20px',
+                                    left: 0,
+                                    width: '100%',
+                                    height: '4px',
+                                    background: 'var(--color-gray-100)',
+                                    borderRadius: '10px',
+                                    overflow: 'hidden'
+                                }}>
+                                    <div style={{
+                                        width: `${formData.completion}%`,
+                                        height: '100%',
+                                        background: 'var(--color-primary)',
+                                        transition: 'width 0.3s ease'
+                                    }} />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -138,31 +165,26 @@ export default function GrantSettings({ grant, isPI }: { grant: any, isPI: boole
                 </Button>
             </div>
 
-            {isDeleteModalOpen && (
-                <div style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 1000, backdropFilter: 'blur(4px)'
-                }}>
-                    <div className="card-neumorphic" style={{ background: 'white', padding: 'var(--space-8)', maxWidth: '450px', width: '90%' }}>
-                        <div style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
-                            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--color-error)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--space-4) auto' }}>
-                                <AlertTriangle size={32} />
-                            </div>
-                            <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>Are you absolutely sure?</h3>
-                            <p style={{ color: 'var(--color-gray-500)', marginTop: 'var(--space-2)' }}>
-                                This action cannot be undone. This will permanently delete the grant <strong>{grant.name}</strong> and remove all associated data.
-                            </p>
-                        </div>
-                        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
-                            <Button variant="ghost" style={{ flex: 1 }} onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-                            <Button variant="primary" style={{ flex: 1, background: 'var(--color-error)' }} onClick={handleDelete} disabled={isDeleting}>
-                                {isDeleting ? <Loader size="sm" variant="white" /> : 'Yes, Delete'}
-                            </Button>
-                        </div>
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Remove Grant Portfolio?"
+                footer={<>
+                    <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+                    <Button variant="primary" style={{ background: 'var(--color-error)' }} onClick={handleDelete} disabled={isDeleting}>
+                        {isDeleting ? <Loader size="sm" variant="white" /> : 'Confirm Deletion'}
+                    </Button>
+                </>}
+            >
+                <div style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
+                    <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--color-error)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--space-4) auto' }}>
+                        <AlertTriangle size={32} />
                     </div>
+                    <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-600)', lineHeight: 1.6 }}>
+                        Are you sure you want to remove <strong>{grant.name}</strong>? This action is permanent and will delete all associated data including budget, personnel, and milestones.
+                    </p>
                 </div>
-            )}
+            </Modal>
         </div>
     )
 }

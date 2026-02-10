@@ -188,6 +188,14 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
     const available = totalFunds - totalSpent
     const allocatedFunds = (budgetItems as any[]).reduce((acc, item: any) => acc + item.price, 0)
 
+    const formatAllocation = (price: number) => {
+        if (!totalFunds || totalFunds === 0) return '0%';
+        const percent = (price / totalFunds) * 100;
+        if (percent >= 1) return `${Math.round(percent)}%`;
+        if (percent >= 0.1) return `${percent.toFixed(1)}%`;
+        return '<0.1%';
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-6)' }}>
@@ -261,7 +269,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                                 <td style={{ padding: '12px 24px', fontWeight: 600 }}>{item.description}</td>
                                 <td style={{ padding: '12px 24px' }}><span style={{ fontSize: '10px', background: 'var(--color-gray-100)', padding: '2px 8px', borderRadius: '4px' }}>{item.category}</span></td>
                                 <td style={{ padding: '12px 24px', fontWeight: 700 }}><NairaSymbol />{item.price.toLocaleString()}</td>
-                                <td style={{ padding: '12px 24px' }}>{totalFunds ? `${Math.round((item.price / totalFunds) * 100)}%` : '0%'}</td>
+                                <td style={{ padding: '12px 24px' }}>{formatAllocation(item.price)}</td>
                                 <td style={{ padding: '12px 24px' }}>{item.status}</td>
                                 <td style={{ padding: '12px 24px', textAlign: 'right' }}><MoreHorizontal size={18} /></td>
                             </tr>
@@ -453,7 +461,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                             />
                             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
                                 <Button variant="ghost" type="button" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                                <Button variant="primary" type="submit" disabled={isCreatingBudgetItem}>Add Item</Button>
+                                <Button variant="primary" type="submit" disabled={isCreatingBudgetItem}>{isCreatingBudgetItem ? <Loader /> : 'Add Item'}</Button>
                             </div>
                         </form>
                     </div>

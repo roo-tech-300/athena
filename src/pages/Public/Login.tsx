@@ -5,6 +5,7 @@ import { useLoginAccount } from '../../hooks/useAuth'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '../../components/ui/Toast'
+import Loader from '../../components/ui/Loader'
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -121,7 +122,7 @@ export default function Login() {
 
                             <Button size="lg" style={{ width: '100%', borderRadius: 'var(--radius-lg)' }}>
                                 {
-                                    loading ? 'Signing in...' : 'Sign In'
+                                    loading ? <Loader /> : 'Sign In'
                                 }
                             </Button>
                         </form>

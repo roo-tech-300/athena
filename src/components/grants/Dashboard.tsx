@@ -99,7 +99,7 @@ export default function GrantDashboard({ grant, myMembership }: { grant?: any, m
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                         {upcomingMilestones.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: 'var(--space-10)', color: 'var(--color-gray-400)' }}>
-                                All milestones completed!
+                                No milestones to show!
                             </div>
                         ) : upcomingMilestones.map((d, i) => (
                             <div key={i} style={{

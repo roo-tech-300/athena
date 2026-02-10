@@ -4,6 +4,7 @@ import { Mail, Lock, User, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { useCreateAccount } from '../../hooks/useAuth'
 import { useToast } from '../../components/ui/Toast'
+import Loader from '../../components/ui/Loader'
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -159,7 +160,7 @@ export default function SignUp() {
                             </div>
 
                             <Button size="lg" style={{ width: '100%', borderRadius: 'var(--radius-lg)' }}>
-                                {loading ? "Creating Account..." : "Sign Up"}
+                                {loading ? <Loader /> : "Sign Up"}
                             </Button>
                         </form>
 
