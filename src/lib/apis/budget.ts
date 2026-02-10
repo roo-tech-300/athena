@@ -1,4 +1,4 @@
-import { database, ID, Query } from "../appwrite"
+import { database, ID, Query, storage } from "../appwrite"
 import { createActivity } from "./grants"
 
 export const createBudgetItem = async (
@@ -56,34 +56,67 @@ export const createTransactions = async (
     item: string,
     amount: number,
     grantId: string,
+    file?: File,
 ) => {
-    const res = await database.createRow(
-        import.meta.env.VITE_APPWRITE_DATABASE_ID,
-        import.meta.env.VITE_APPWRITE_TRANSACTIONS_ID,
-        ID.unique(),
-        {
-            budgetItem: item,
-            amount,
-            grant: grantId,
+    try {
+        let proofId = null;
+
+        if (file) {
+            const proof = await storage.createFile(
+                import.meta.env.VITE_APPWRITE_STORAGE_ID,
+                ID.unique(),
+                file,
+            );
+            proofId = proof.$id;
         }
-    )
-    return res
+
+        const res = await database.createRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_TRANSACTIONS_ID,
+            ID.unique(),
+            {
+                budgetItem: item,
+                amount,
+                grant: grantId,
+                ...(proofId && { proof: proofId })
+            }
+        )
+        return res
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
 }
 
 export const getTransactions = async (grantId: string) => {
     const res = await database.listRows(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
         import.meta.env.VITE_APPWRITE_TRANSACTIONS_ID,
-        [Query.equal("grant", grantId)]
+        [
+            Query.equal("grant", grantId),
+            Query.orderDesc("$createdAt")
+        ]
     )
 
     const transactionsWithBudget = await Promise.all(
         res.rows.map(async (transaction) => {
             const budgetItem = await getBudgetItem(transaction.budgetItem)
+            let fileUrl = null;
+
+            // Ensure we handle proof as either string ID or object
+            const proofId = typeof transaction.proof === 'object' ? (transaction as any).proof?.$id : transaction.proof;
+
+            if (proofId) {
+                fileUrl = storage.getFileView(
+                    import.meta.env.VITE_APPWRITE_STORAGE_ID,
+                    proofId
+                ).toString();
+            }
 
             return {
                 ...transaction,
-                budgetItem, // now full object, not just ID
+                budgetItem,
+                fileUrl
             }
         })
     )

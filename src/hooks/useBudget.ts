@@ -47,8 +47,8 @@ export const useUpdateBudgetItem = () => {
 
 export const useCreateTransaction = () => {
     return useMutation({
-        mutationFn: ({ item, amount, grantId }: { item: string, amount: number, grantId: string }) =>
-            createTransactions(item, amount, grantId),
+        mutationFn: ({ item, amount, grantId, file }: { item: string, amount: number, grantId: string, file?: File }) =>
+            createTransactions(item, amount, grantId, file),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['budget-items', variables.grantId] })
             queryClient.invalidateQueries({ queryKey: ['transactions', variables.grantId] })

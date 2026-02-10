@@ -5,10 +5,18 @@ import {
     PieChart,
     MoreHorizontal,
     ShoppingBag,
-    Download
+    Download,
+    FileUp,
+    FileText,
+    ExternalLink,
+    Calendar,
+    ArrowRight,
+    Link as LinkIcon
 } from 'lucide-react'
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
+import Modal from '../ui/Modal'
+import PDFViewer from '../ui/PDFViewer'
 import NairaSymbol from '../ui/NairaSymbol'
 import { formatMoneyCompact } from '../../utils/grant'
 import { useToast } from '../ui/Toast'
@@ -19,6 +27,7 @@ import {
     useGetTransactions,
     useUpdateBudgetItem
 } from '../../hooks/useBudget'
+import { storage } from '../../lib/appwrite'
 
 export default function BudgetTracker({ grant, myMembership }: { grant?: any, myMembership?: any }) {
     const roles = myMembership?.role || [];
@@ -34,6 +43,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false)
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
+    const [selectedTransaction, setSelectedTransaction] = useState<any>(null)
     const [formData, setFormData] = useState({
         description: '',
         category: 'Hardware',
@@ -41,9 +51,10 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
         allocation: '',
         status: 'Planned'
     })
-    const [transactionData, setTransactionData] = useState({
+    const [transactionData, setTransactionData] = useState<{ item: string, amount: number, file: File | null }>({
         item: '',
-        amount: 0
+        amount: 0,
+        file: null
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -99,7 +110,8 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
             await createTransactionMutation({
                 item: transactionData.item,
                 amount,
-                grantId: grant.$id
+                grantId: grant.$id,
+                file: transactionData.file || undefined
             })
 
             const newTotalSpent = currentSpent + amount
@@ -123,7 +135,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
 
             addToast("Transaction logged successfully", "success")
             setIsTransactionModalOpen(false)
-            setTransactionData({ item: '', amount: 0 })
+            setTransactionData({ item: '', amount: 0, file: null })
         } catch (error) {
             console.error(error)
             addToast("Failed to create transaction. Please try again.", 'error')
@@ -309,13 +321,108 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                     {transactions.slice(0, 3).map((tx: any) => (
-                        <div key={tx.$id} style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)' }}>
-                            <div style={{ fontWeight: 600, fontSize: '14px' }}>{tx.budgetItem.description}</div>
-                            <div style={{ color: '#ef4444', fontWeight: 700 }}>-<NairaSymbol />{tx.amount.toLocaleString()}</div>
+                        <div
+                            key={tx.$id}
+                            onClick={() => setSelectedTransaction(tx)}
+                            style={{
+                                background: 'white',
+                                padding: '16px',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(0,0,0,0.05)',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}
+                            className="capital-card"
+                        >
+                            <div>
+                                <div style={{ fontWeight: 600, fontSize: '14px' }}>{tx.budgetItem?.description}</div>
+                                <div style={{ color: '#ef4444', fontWeight: 700 }}>-<NairaSymbol />{tx.amount.toLocaleString()}</div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                {tx.proof && <FileText size={16} color="var(--color-primary)" style={{ opacity: 0.7 }} />}
+                                <ArrowRight size={14} color="var(--color-gray-300)" />
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
+
+            {/* Transaction Detail Modal */}
+            <Modal
+                isOpen={!!selectedTransaction}
+                onClose={() => setSelectedTransaction(null)}
+                title="Capital Execution Details"
+                footer={<Button variant="ghost" onClick={() => setSelectedTransaction(null)}>Close Overlay</Button>}
+            >
+                {selectedTransaction && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 'var(--space-8)' }}>
+                            {/* Left Side: Stats & Details */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+                                <div className="card-neumorphic" style={{ padding: 'var(--space-4)', background: 'var(--color-gray-25)' }}>
+                                    <h4 style={{ fontSize: '11px', color: 'var(--color-gray-400)', textTransform: 'uppercase', fontWeight: 700, marginBottom: '8px' }}>Transaction Profile</h4>
+                                    <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, color: '#ef4444' }}>
+                                        -<NairaSymbol />{selectedTransaction.amount.toLocaleString()}
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginTop: 'var(--space-2)', color: 'var(--color-gray-500)', fontSize: '12px' }}>
+                                        <Calendar size={14} />
+                                        {new Date(selectedTransaction.$createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 style={{ fontSize: '12px', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <LinkIcon size={14} /> Linked Budget Item
+                                    </h4>
+                                    <div style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', background: 'white', border: '1px solid var(--color-gray-100)' }}>
+                                        <div style={{ fontWeight: 700, fontSize: '14px' }}>{selectedTransaction.budgetItem?.description}</div>
+                                        <div style={{ fontSize: '11px', color: 'var(--color-gray-400)', marginTop: '4px' }}>Category: {selectedTransaction.budgetItem?.category}</div>
+
+                                        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-gray-400)' }}>ALLOCATION STATUS</span>
+                                            <span style={{
+                                                fontSize: '10px',
+                                                fontWeight: 800,
+                                                padding: '4px 10px',
+                                                borderRadius: '20px',
+                                                background: selectedTransaction.budgetItem?.status === 'Exceeded' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                                color: selectedTransaction.budgetItem?.status === 'Exceeded' ? '#ef4444' : '#10b981'
+                                            }}>
+                                                {selectedTransaction.budgetItem?.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 style={{ fontSize: '12px', fontWeight: 700, marginBottom: '12px' }}>Activity Context</h4>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        {transactions
+                                            .filter((tx: any) => tx.budgetItem?.$id === selectedTransaction.budgetItem?.$id)
+                                            .map((tx: any) => (
+                                                <div key={tx.$id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', fontSize: '12px', background: tx.$id === selectedTransaction.$id ? 'rgba(59, 130, 246, 0.05)' : 'transparent', borderRadius: '8px', border: tx.$id === selectedTransaction.$id ? '1px solid rgba(59, 130, 246, 0.1)' : 'none' }}>
+                                                    <span style={{ color: 'var(--color-gray-500)' }}>{new Date(tx.$createdAt).toLocaleDateString()}</span>
+                                                    <span style={{ fontWeight: 600 }}>-<NairaSymbol />{tx.amount.toLocaleString()}</span>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Side: PDF Preview */}
+                            <div>
+                                <h4 style={{ fontSize: '12px', fontWeight: 700, marginBottom: '12px' }}>Capital Execution Proof</h4>
+                                <PDFViewer url={selectedTransaction.fileUrl} title={`Proof - ${selectedTransaction.budgetItem?.description}`} />
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Modal>
 
             {isModalOpen && (
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(4px)' }} onClick={() => setIsModalOpen(false)}>
@@ -358,7 +465,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                     <div style={{ background: 'white', padding: '32px', borderRadius: '16px', width: '100%', maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
                         <h2 style={{ marginBottom: '24px', fontWeight: 700 }}>Log Transaction</h2>
                         <form onSubmit={handleTransactionSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <select value={transactionData.item} onChange={e => setTransactionData({ ...transactionData, item: e.target.value })} style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }} required>
+                            <select value={transactionData.item} onChange={(e) => setTransactionData({ ...transactionData, item: e.target.value })} style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }} required>
                                 <option value="">Select Item</option>
                                 {budgetItems.map((i: any) => <option key={i.$id} value={i.$id}>{i.description}</option>)}
                             </select>
@@ -373,9 +480,52 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                                 style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }}
                                 required
                             />
+                            <div className="input-group">
+                                <label className="input-label" style={{ fontSize: '12px', color: 'var(--color-gray-500)', marginBottom: '8px', display: 'block' }}>Payment Proof (PDF Only)</label>
+                                <div
+                                    style={{
+                                        border: '2px dashed var(--color-gray-200)',
+                                        borderRadius: '12px',
+                                        padding: '20px',
+                                        textAlign: 'center',
+                                        cursor: 'pointer',
+                                        background: transactionData.file ? 'rgba(16, 185, 129, 0.05)' : 'var(--color-gray-25)',
+                                        borderColor: transactionData.file ? 'var(--color-success)' : 'var(--color-gray-200)',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    onClick={() => document.getElementById('transaction-file')?.click()}
+                                >
+                                    <input
+                                        id="transaction-file"
+                                        type="file"
+                                        accept=".pdf"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file && file.type === 'application/pdf') {
+                                                setTransactionData({ ...transactionData, file });
+                                            } else if (file) {
+                                                addToast("Only PDF files are accepted", "warning");
+                                            }
+                                        }}
+                                        style={{ display: 'none' }}
+                                    />
+                                    {transactionData.file ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--color-success)' }}>
+                                            <FileText size={20} />
+                                            <span style={{ fontSize: '13px', fontWeight: 600 }}>{transactionData.file.name}</span>
+                                        </div>
+                                    ) : (
+                                        <div style={{ color: 'var(--color-gray-400)' }}>
+                                            <FileUp size={24} style={{ marginBottom: '8px' }} />
+                                            <div style={{ fontSize: '13px', fontWeight: 500 }}>Click to upload receipt or proof</div>
+                                            <div style={{ fontSize: '11px' }}>Maximum 5MB • PDF preferred</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
                                 <Button variant="ghost" type="button" onClick={() => setIsTransactionModalOpen(false)}>Cancel</Button>
-                                <Button variant="primary" type="submit" disabled={isCreatingTransaction}>Log</Button>
+                                <Button variant="primary" type="submit" disabled={isCreatingTransaction}>{isCreatingTransaction ? <Loader /> : 'Log'}</Button>
                             </div>
                         </form>
                     </div>
@@ -395,6 +545,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                                     <th style={{ padding: '12px', textAlign: 'left' }}>Item</th>
                                     <th style={{ padding: '12px', textAlign: 'right' }}>Amount</th>
                                     <th style={{ padding: '12px', textAlign: 'right' }}>Date</th>
+                                    <th style={{ padding: '12px', textAlign: 'right' }}>Proof</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -403,6 +554,20 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                                         <td style={{ padding: '12px' }}>{tx.budgetItem.description}</td>
                                         <td style={{ padding: '12px', textAlign: 'right', fontWeight: 700 }}><NairaSymbol />{tx.amount.toLocaleString()}</td>
                                         <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>{new Date(tx.$createdAt).toLocaleDateString()}</td>
+                                        <td style={{ padding: '12px', textAlign: 'right' }}>
+                                            {tx.proof ? (
+                                                <a
+                                                    href={storage.getFileView(import.meta.env.VITE_APPWRITE_STORAGE_ID, tx.proof).toString()}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    style={{ color: 'var(--color-primary)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, textDecoration: 'none' }}
+                                                >
+                                                    View <ExternalLink size={12} />
+                                                </a>
+                                            ) : (
+                                                <span style={{ color: 'var(--color-gray-300)', fontSize: '12px' }}>None</span>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -410,6 +575,28 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                     </div>
                 </div>
             )}
+            <style>{`
+                .capital-card:hover {
+                    transform: translateY(-4px) scale(1.02);
+                    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+                    border-color: var(--color-primary-light);
+                    z-index: 10;
+                }
+                .capital-card::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 3px;
+                    background: var(--color-primary);
+                    transform: scaleX(0);
+                    transition: transform 0.3s ease;
+                }
+                .capital-card:hover::after {
+                    transform: scaleX(1);
+                }
+            `}</style>
         </div>
     )
 }
