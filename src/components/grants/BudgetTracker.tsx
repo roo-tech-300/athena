@@ -37,13 +37,13 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
     const [formData, setFormData] = useState({
         description: '',
         category: 'Hardware',
-        price: '',
+        price: 0,
         allocation: '',
         status: 'Planned'
     })
     const [transactionData, setTransactionData] = useState({
         item: '',
-        amount: ''
+        amount: 0
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -63,7 +63,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
             setFormData({
                 description: '',
                 category: 'Hardware',
-                price: '',
+                price: 0,
                 allocation: '',
                 status: 'Planned'
             })
@@ -123,7 +123,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
 
             addToast("Transaction logged successfully", "success")
             setIsTransactionModalOpen(false)
-            setTransactionData({ item: '', amount: '' })
+            setTransactionData({ item: '', amount: 0 })
         } catch (error) {
             console.error(error)
             addToast("Failed to create transaction. Please try again.", 'error')
@@ -333,7 +333,17 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                                 <option value="Logistics">Logistics</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <input type="number" placeholder="Price" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }} required />
+                            <input
+                                type="text"
+                                placeholder="Price"
+                                value={formData.price === 0 ? '' : Number(formData.price).toLocaleString()}
+                                onChange={e => {
+                                    const val = e.target.value.replace(/\D/g, '');
+                                    setFormData({ ...formData, price: val ? parseInt(val, 10) : 0 });
+                                }}
+                                style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }}
+                                required
+                            />
                             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
                                 <Button variant="ghost" type="button" onClick={() => setIsModalOpen(false)}>Cancel</Button>
                                 <Button variant="primary" type="submit" disabled={isCreatingBudgetItem}>Add Item</Button>
@@ -352,7 +362,17 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                                 <option value="">Select Item</option>
                                 {budgetItems.map((i: any) => <option key={i.$id} value={i.$id}>{i.description}</option>)}
                             </select>
-                            <input type="number" placeholder="Amount" value={transactionData.amount} onChange={e => setTransactionData({ ...transactionData, amount: e.target.value })} style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }} required />
+                            <input
+                                type="text"
+                                placeholder="Amount"
+                                value={transactionData.amount === 0 ? '' : Number(transactionData.amount).toLocaleString()}
+                                onChange={e => {
+                                    const val = e.target.value.replace(/\D/g, '');
+                                    setTransactionData({ ...transactionData, amount: val ? parseInt(val, 10) : 0 });
+                                }}
+                                style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '8px' }}
+                                required
+                            />
                             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
                                 <Button variant="ghost" type="button" onClick={() => setIsTransactionModalOpen(false)}>Cancel</Button>
                                 <Button variant="primary" type="submit" disabled={isCreatingTransaction}>Log</Button>

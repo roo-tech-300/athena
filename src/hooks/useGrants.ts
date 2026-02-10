@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember, getActivities, updateGrant, deleteGrant } from "../lib/apis/grants";
+import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember, getActivities, updateGrant, deleteGrant, addGrantMember } from "../lib/apis/grants";
 import { queryClient } from "../lib/react-query";
 
 export function useActivities(grantId: string) {
@@ -146,6 +146,16 @@ export function useUpdateGrantMember() {
         onSettled: (_data, _error, variables) => {
             // Always refetch after error or success to ensure we have the truth from the server
             queryClient.invalidateQueries({ queryKey: ['grantMembers', variables.grantId] });
+        }
+    })
+}
+
+export function useAddGrantMember() {
+    return useMutation({
+        mutationFn: ({ grantId, email, role }: { grantId: string, email: string, role: any[] }) =>
+            addGrantMember(grantId, email, role),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['grantMembers', variables.grantId] })
         }
     })
 }

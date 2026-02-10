@@ -2,9 +2,12 @@ import { useState } from 'react'
 import { Mail, Award, Clock, Star, Users, CheckCircle, XCircle, Shield } from 'lucide-react'
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
-import { useGrantMembers, useUpdateGrantMember } from '../../hooks/useGrants'
+import Modal from '../ui/Modal'
+import { useGrantMembers, useUpdateGrantMember, useAddGrantMember } from '../../hooks/useGrants'
 import { useAuth } from '../../useContext/context'
 import { toast } from 'react-toastify'
+import { getUserInitials } from '../../utils/user'
+import { UserPlus } from 'lucide-react'
 
 type Role = 'Principal Investigator' | 'Researcher' | 'Reviewer' | 'Finance Officer';
 
@@ -58,8 +61,13 @@ const getRoleConfig = (role: Role) => {
 export default function Personnel({ grant, myMembership }: { grant?: any, myMembership?: any }) {
     const [activeTab, setActiveTab] = useState<'Accepted' | 'Pending'>('Accepted');
     const { user: currentUser } = useAuth();
-    const { data: members, isLoading: membersLoading } = useGrantMembers(grant?.$id);
+    const { data: members, isLoading: membersLoading, refetch: refreshMembers } = useGrantMembers(grant?.$id);
     const { mutateAsync: updateMember, isPending: isUpdatingMember } = useUpdateGrantMember();
+    const { mutateAsync: addMember, isPending: isAddingMember } = useAddGrantMember();
+
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [newMemberEmail, setNewMemberEmail] = useState('');
+    const [newMemberRoles, setNewMemberRoles] = useState<Role[]>(['Researcher']);
 
     if (!grant || membersLoading) {
         return <Loader size="xl" label="Synchronizing team data..." />
@@ -108,6 +116,45 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
             await updateMember({ memberId: member.$id, role: newRoles, grantId: grant.$id });
         } catch (error) {
             toast.error("Failed to update roles");
+        }
+    }
+
+    const handleAddMember = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newMemberEmail) {
+            toast.warn("Please enter an email address");
+            return;
+        }
+        try {
+            await addMember({
+                grantId: grant.$id,
+                email: newMemberEmail,
+                role: newMemberRoles
+            });
+            toast.success("Member added to project");
+            setIsAddModalOpen(false);
+            setNewMemberEmail('');
+            setNewMemberRoles(['Researcher']);
+        } catch (error: any) {
+            if (error.message === 'USER_NOT_FOUND') {
+                toast.error("User with this email not found on Athena.");
+            } else if (error.message === 'ALREADY_MEMBER') {
+                toast.error("This user is already a member of this grant.");
+            } else {
+                toast.error("Failed to add member");
+            }
+        }
+    }
+
+    const toggleNewMemberRole = (role: Role) => {
+        if (newMemberRoles.includes(role)) {
+            if (newMemberRoles.length > 1) {
+                setNewMemberRoles(newMemberRoles.filter(r => r !== role));
+            } else {
+                toast.warn("Select at least one role");
+            }
+        } else {
+            setNewMemberRoles([...newMemberRoles, role]);
         }
     }
 
@@ -173,6 +220,16 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                         )}
                     </button>
                 )}
+                {isPI && (
+                    <Button
+                        size="sm"
+                        variant="primary"
+                        onClick={() => setIsAddModalOpen(true)}
+                        style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <UserPlus size={16} /> Add Member
+                    </Button>
+                )}
             </div>
 
             {activeTab === 'Accepted' ? (
@@ -213,9 +270,9 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                                                     width: '48px', height: '48px', borderRadius: '50%',
                                                     background: isMe ? 'var(--color-primary)' : 'var(--color-gray-500)',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700,
-
+                                                    fontSize: '14px'
                                                 }}>
-                                                    {member.user?.name?.charAt(0) || '?'}
+                                                    {getUserInitials(member.user)}
                                                 </div>
 
                                                 {/* User Info */}
@@ -315,9 +372,10 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                                             <div style={{
                                                 width: '48px', height: '48px', borderRadius: '50%',
                                                 background: 'var(--color-gray-200)',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
+                                                fontSize: '14px'
                                             }}>
-                                                {member.user?.name?.charAt(0) || '?'}
+                                                {getUserInitials(member.user)}
                                             </div>
                                             <div style={{ flex: 1 }}>
                                                 <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 700, margin: 0 }}>{member.user?.name || 'Unknown User'}</h3>
@@ -355,6 +413,65 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                     </div>
                 </div>
             )}
+            {/* Add Member Modal */}
+            <Modal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                title="Add Team Member"
+                footer={<>
+                    <Button variant="ghost" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+                    <Button onClick={handleAddMember} disabled={isAddingMember}>
+                        {isAddingMember ? <Loader size="sm" variant="white" /> : 'Add researcher'}
+                    </Button>
+                </>}
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+                    <div className="input-group">
+                        <label className="input-label">Email Address</label>
+                        <div style={{ position: 'relative' }}>
+                            <Mail size={16} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gray-400)' }} />
+                            <input
+                                type="email"
+                                className="input-field"
+                                style={{ paddingLeft: '44px' }}
+                                placeholder="researcher@university.edu"
+                                value={newMemberEmail}
+                                onChange={(e) => setNewMemberEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="input-group">
+                        <label className="input-label">Assigned Roles</label>
+                        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginTop: '8px' }}>
+                            {ALL_ROLES.map(role => {
+                                const isActive = newMemberRoles.includes(role);
+                                const config = getRoleConfig(role);
+                                return (
+                                    <button
+                                        key={role}
+                                        type="button"
+                                        onClick={() => toggleNewMemberRole(role)}
+                                        style={{
+                                            padding: '8px 16px',
+                                            borderRadius: 'var(--radius-full)',
+                                            border: `1.5px solid ${isActive ? config.color : 'rgba(0,0,0,0.05)'}`,
+                                            background: isActive ? config.bg : 'white',
+                                            color: isActive ? config.color : 'var(--color-gray-400)',
+                                            fontSize: '11px',
+                                            fontWeight: 700,
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                    >
+                                        {config.label}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 }

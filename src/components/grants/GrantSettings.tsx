@@ -98,10 +98,13 @@ export default function GrantSettings({ grant, isPI }: { grant: any, isPI: boole
                         <div>
                             <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Expected Funding (₦)</label>
                             <input
-                                type="number"
+                                type="text"
                                 style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-gray-200)', outline: 'none' }}
-                                value={formData.expectedFunding}
-                                onChange={e => setFormData({ ...formData, expectedFunding: Number(e.target.value) })}
+                                value={formData.expectedFunding === 0 ? '' : formData.expectedFunding.toLocaleString()}
+                                onChange={e => {
+                                    const val = e.target.value.replace(/\D/g, '');
+                                    setFormData({ ...formData, expectedFunding: val ? parseInt(val, 10) : 0 });
+                                }}
                             />
                         </div>
                         <div>

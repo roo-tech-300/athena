@@ -1,5 +1,6 @@
 import { generateGrantCode } from "../../utils/grant"
 import { database, ID, Query } from "../appwrite"
+import { getUserByEmail } from "./user";
 
 type Role = 'Principal Investigator' | 'Researcher' | 'Reviewer' | 'Finance Officer';
 
@@ -89,6 +90,35 @@ export const joinGrantByCode = async (code: string, userId: string) => {
     }
 }
 
+export const addGrantMember = async (grantId: string, email: string, role: Role[]) => {
+    try {
+        const userSearch = await getUserByEmail(email);
+        if (userSearch.rows.length === 0) {
+            throw new Error("USER_NOT_FOUND")
+        }
+        const user = userSearch.rows[0];
+        const userId = user.$id;
+
+        // Check if user is already a member
+        const existingMembers = await database.listRows(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_MEMBER_COLLECTION_ID,
+            [
+                Query.equal("grant", grantId),
+                Query.equal("user", userId)
+            ]
+        )
+
+        if (existingMembers.rows.length > 0) {
+            throw new Error("ALREADY_MEMBER")
+        }
+
+        return await createGrantMember(grantId, userId, role, "Accepted")
+    } catch (error) {
+        console.error(error);
+        throw error
+    }
+}
 
 export const createGrantMember = async (grantId: string, userId: string, role?: Role[], status?: string) => {
 
