@@ -40,7 +40,7 @@ export default function GrantPage() {
 
     const { data: grant, isLoading: grantLoading } = useGrant(id!)
     const { data: members, isLoading: membersLoading } = useGrantMembers(id!)
-    const { user } = useAuth()
+    const { user, logout } = useAuth()
 
     const sidebarItems = [
         { label: 'Dashboard', icon: LayoutDashboard },
@@ -52,13 +52,14 @@ export default function GrantPage() {
         { label: 'Settings', icon: Settings },
     ]
 
-    const { mutateAsync: logoutMutation } = useLogoutAccount()
+    const { mutateAsync: logoutMutation, isPending: logoutPending } = useLogoutAccount()
 
     // log out
     const handleLogout = async () => {
         try {
             await logoutMutation()
-            navigate('/portal')
+            logout() // Immediately clear AuthContext state
+            navigate('/login')
         } catch (error) {
             console.log(error)
         }
@@ -148,13 +149,19 @@ export default function GrantPage() {
                 </nav>
 
                 <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: 'var(--space-6)' }}>
-                    <SidebarItem
-                        icon={LogOut}
-                        label="Logout"
-                        isActive={false}
-                        onClick={handleLogout}
-                        isCollapsed={!isSidebarVisible}
-                    />
+                    {
+                        logoutPending ? (
+                            <Loader size="sm" />
+                        ) : (
+                            <SidebarItem
+                                icon={LogOut}
+                                label="Logout"
+                                isActive={false}
+                                onClick={handleLogout}
+                                isCollapsed={!isSidebarVisible}
+                            />
+                        )
+                    }
                 </div>
             </aside>
 
