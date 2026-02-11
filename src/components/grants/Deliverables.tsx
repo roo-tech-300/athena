@@ -285,8 +285,10 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                                         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                                                                             {task.assignedMembers?.slice(0, 3).map((assignment: any, i: number) => {
-                                                                                const memberId = typeof assignment === 'string' ? assignment : assignment.memberId;
+                                                                                console.log(task.assignedMembers)
+                                                                                const memberId = assignment.$id
                                                                                 const member = grantMembers.find((m: GrantMember) => m.$id === memberId);
+                                                                                console.log(memberId, member)
                                                                                 return (
                                                                                     <div key={memberId} title={member?.user?.name || 'Unknown'} style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'var(--color-primary)', border: '2px solid white', marginLeft: i === 0 ? 0 : '-6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '9px', fontWeight: 700 }}>
                                                                                         {member?.user?.name?.charAt(0) || '?'}
@@ -371,7 +373,7 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
                                     <div>
-                                        <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Type *</label>
+                                        <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Status *</label>
                                         <select
                                             className="card-neumorphic"
                                             style={{ width: '100%', padding: 'var(--space-3)', fontSize: 'var(--text-sm)', border: '1px solid var(--color-gray-200)', background: 'white', borderRadius: 'var(--radius-md)', outline: 'none', cursor: 'pointer' }}
@@ -523,10 +525,16 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                                         className="card-neumorphic"
                                         style={{ width: '100%', padding: 'var(--space-3)', fontSize: 'var(--text-sm)', border: '1px solid var(--color-gray-200)', background: 'white', borderRadius: 'var(--radius-md)', outline: 'none' }}
                                         value={taskForm.dueDate}
+                                        max={selectedDeliverable?.dueDate}
                                         onChange={e => setTaskForm({ ...taskForm, dueDate: e.target.value })}
                                         onFocus={(e) => { e.target.style.borderColor = 'var(--color-primary)' }}
                                         onBlur={(e) => { e.target.style.borderColor = 'var(--color-gray-200)' }}
                                     />
+                                    {selectedDeliverable?.dueDate && (
+                                        <p style={{ fontSize: '10px', color: 'var(--color-gray-400)', marginTop: '6px' }}>
+                                            Must be on or before {formatDate(selectedDeliverable.dueDate)}
+                                        </p>
+                                    )}
                                 </div>
                                 <div>
                                     <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)', marginBottom: '8px' }}>Description</label>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FileText, Calendar, File, FolderOpen, Plus, Link, CheckCircle, Clock } from 'lucide-react'
+import { FileText, Calendar, File, FolderOpen, Plus, CheckCircle, Clock } from 'lucide-react'
 import { useGoogleLogin } from '@react-oauth/google'
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
@@ -8,6 +8,7 @@ import { useGetMilestones } from '../../hooks/useMilestones'
 import { useGetDeliverables } from '../../hooks/useDeliverables'
 import { createGoogleDoc } from '../../lib/googleDocs'
 import { useCreateDocument, useGetDocuments, useUpdateDocument } from '../../hooks/useDocuments'
+import { useGetUser } from '../../hooks/useUser'
 
 const getTypeConfig = (type?: string) => {
     switch (type) {
@@ -81,13 +82,16 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
     })
 
     const { data: documents = [], isLoading: docsLoading } = useGetDocuments(grant?.$id || '')
+    const { data: user } = useGetUser()
     const { data: milestones = [] } = useGetMilestones(grant?.$id || '')
     const { data: deliverables = [] } = useGetDeliverables(grant?.$id || '')
     const { mutateAsync: createDocumentMutation } = useCreateDocument()
     const { mutateAsync: updateDocumentMutation } = useUpdateDocument()
 
     const roles = myMembership?.role || []
-    const canApprove = roles.includes('Principal Investigator') || roles.includes('Reviewer')
+    const isPI = roles.includes('Principal Investigator')
+    const isReviewer = roles.includes('Reviewer')
+    const canApprove = isPI || isReviewer
 
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
@@ -106,7 +110,8 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                     doc: docId,
                     grant: grant.$id,
                     action: formData.action,
-                    actionItem: formData.actionItem
+                    actionItem: formData.actionItem,
+                    creator: user?.$id || ''
                 })
 
                 addToast("Document created and connected successfully!", "success")
@@ -139,9 +144,17 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
 
     if (!grant) return <Loader size="xl" label="Accessing archive..." />
 
-    const totalDocs = documents.length
-    const acceptedCount = documents.filter((d: any) => d.status === 'Accepted').length
-    const pendingCount = documents.filter((d: any) => d.status === 'Pending' || !d.status).length
+    const visibleDocuments = documents.filter((doc: any) => {
+        if (doc.status === 'Accepted') return true
+
+        // Pending status visibility: PI, Reviewer, and Creator
+        const isCreator = doc.creator === user?.$id
+        return isPI || isReviewer || isCreator
+    })
+
+    const totalDocs = visibleDocuments.length
+    const acceptedCount = visibleDocuments.filter((d: any) => d.status === 'Accepted').length
+    const pendingCount = visibleDocuments.filter((d: any) => d.status === 'Pending' || !d.status).length
 
     const handleApprove = async (docId: string) => {
         try {
@@ -255,13 +268,13 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                             </tr>
                         </thead>
                         <tbody>
-                            {documents.length === 0 ? (
+                            {visibleDocuments.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} style={{ padding: 'var(--space-10)', textAlign: 'center', color: 'var(--color-gray-400)' }}>
                                         No documents found. Create your first one!
                                     </td>
                                 </tr>
-                            ) : documents.map((doc: any) => {
+                            ) : visibleDocuments.map((doc: any) => {
                                 const typeConfig = getTypeConfig('google-doc')
                                 const statusConfig = getStatusConfig(doc.status)
                                 const TypeIcon = typeConfig.icon

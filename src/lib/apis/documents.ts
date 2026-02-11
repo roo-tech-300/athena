@@ -6,6 +6,7 @@ export const createDocument = async (
     title: string,
     action: "Deliverable" | "Milestone",
     actionItem: string,
+    creator: string
 ) => {
     try {
         const res = await database.createRow(
@@ -19,6 +20,7 @@ export const createDocument = async (
                 action,
                 actionItem,
                 status: "Pending",
+                creator
             }
         )
         return res
