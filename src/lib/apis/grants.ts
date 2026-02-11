@@ -9,6 +9,7 @@ export const createGrant = async (
     title: string,
     type: string,
     expectedFunding: number,
+    departmentId: string,
     description?: string,
 ) => {
     try {
@@ -22,7 +23,8 @@ export const createGrant = async (
                 description,
                 type,
                 expectedFunding,
-                code
+                code,
+                department: departmentId
             }
         )
         await createGrantMember(grant.$id, userId, ['Principal Investigator'], "Accepted")
@@ -205,6 +207,40 @@ export const getUserGrants = async (userId: string) => {
                 return m;
             });
 
+            // Fetch department names for grouping
+            const deptIdsToFetch = new Set<string>();
+            populatedMembers.forEach((m: any) => {
+                if (m.grant.department) deptIdsToFetch.add(m.grant.department);
+            });
+
+            if (deptIdsToFetch.size > 0) {
+                const deptIds = Array.from(deptIdsToFetch);
+                const depts = await Promise.all(
+                    deptIds.map(id =>
+                        database.getRow(
+                            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                            import.meta.env.VITE_APPWRITE_DEPARTMENT_ID,
+                            id
+                        )
+                    )
+                );
+
+                const deptsMap = new Map();
+                depts.forEach((d: any) => deptsMap.set(d.$id, d));
+
+                populatedMembers.forEach((m: any) => {
+                    if (m.grant.department) {
+                        m.grant.departmentName = deptsMap.get(m.grant.department)?.name || 'Unknown Funding Group';
+                    } else {
+                        m.grant.departmentName = 'Personal Projects';
+                    }
+                });
+            } else {
+                populatedMembers.forEach((m: any) => {
+                    m.grant.departmentName = 'Personal Projects';
+                });
+            }
+
             return populatedMembers;
         }
 
@@ -337,6 +373,21 @@ export const deleteGrant = async (grantId: string) => {
             )
         }
         return res
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+export const getDepartmentGrants = async (departmentId: string) => {
+    try {
+        const res = await database.listRows(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_COLLECTION_ID,
+            departmentId === 'personal'
+                ? [Query.isNull("department")]
+                : [Query.equal("department", departmentId)]
+        )
+        return res.rows
     } catch (error) {
         console.error(error)
         throw error

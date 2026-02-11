@@ -1,6 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 :root {
+
     /* Primary Colors */
     --color-primary: #3B82F6;
     --color-primary-dark: #1E40AF;
@@ -56,6 +69,7 @@
     --space-8: 2rem;
     --space-12: 3rem;
     --space-16: 4rem;
+    --space-20: 5rem;
 
     /* Border Radius */
     --radius-sm: 0.25rem;

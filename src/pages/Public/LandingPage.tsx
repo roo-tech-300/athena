@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/layout/Navbar'
 import Button from '../../components/ui/Button'
+import { Landmark, Briefcase } from 'lucide-react'
 
 export default function LandingPage() {
     return (
@@ -154,14 +155,14 @@ export default function LandingPage() {
                                             <div style={{ fontSize: 'var(--text-xs)', opacity: 0.8 }}>Active Dept</div>
                                             <div style={{ fontWeight: 600 }}>Faculty of Science</div>
                                         </div>
-                                        <div style={{ fontSize: 'var(--text-xl)' }}>🏛️</div>
+                                        <div style={{ fontSize: 'var(--text-xl)' }}><Landmark size={24} /></div>
                                     </div>
                                     <div className="glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
                                             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>Archived</div>
                                             <div style={{ fontWeight: 600 }}>Medical Research Center</div>
                                         </div>
-                                        <div style={{ fontSize: 'var(--text-xl)', opacity: 0.5 }}>🏥</div>
+                                        <div style={{ fontSize: 'var(--text-xl)', opacity: 0.5 }}><Briefcase size={24} /></div>
                                     </div>
                                 </div>
                             </div>

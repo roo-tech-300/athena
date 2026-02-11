@@ -4,6 +4,7 @@ import Login from './pages/Public/Login'
 import SignUp from './pages/Public/SignUp'
 import Portal from './pages/Private/Portal'
 import GrantPage from './pages/Private/Grants/grantPage'
+import DeptPage from './pages/Private/Departments/DeptPage'
 
 import { ToastProvider } from './components/ui/Toast'
 import { AuthProvider } from './useContext/context'
@@ -29,6 +30,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/portal" element={<Portal />} />
               <Route path="/grant/:id" element={<GrantPage />} />
+              <Route path="/department/:id" element={<DeptPage />} />
             </Route>
 
             {/* 404 Route */}

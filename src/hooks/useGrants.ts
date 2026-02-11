@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember, getActivities, updateGrant, deleteGrant, addGrantMember } from "../lib/apis/grants";
+import { getUserGrants, getGrant, getGrantMembers, createGrant, joinGrantByCode, createActivity, updateGrantMember, getActivities, updateGrant, deleteGrant, addGrantMember, getDepartmentGrants } from "../lib/apis/grants";
 import { queryClient } from "../lib/react-query";
 
 export function useActivities(grantId: string) {
@@ -59,13 +59,14 @@ export function useGrantMembers(grantId: string) {
 
 export function useCreateGrant() {
     return useMutation({
-        mutationFn: ({ userId, title, type, expectedFunding, description }: {
+        mutationFn: ({ userId, title, type, expectedFunding, departmentId, description }: {
             userId: string,
             title: string,
             type: string,
             expectedFunding: number,
+            departmentId: string,
             description?: string
-        }) => createGrant(userId, title, type, expectedFunding, description),
+        }) => createGrant(userId, title, type, expectedFunding, departmentId, description),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['grants', variables.userId] })
         }
@@ -157,5 +158,14 @@ export function useAddGrantMember() {
         onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['grantMembers', variables.grantId] })
         }
+    })
+}
+
+export function useDepartmentGrants(departmentId: string) {
+    return useQuery({
+        queryKey: ['departmentGrants', departmentId],
+        queryFn: () => getDepartmentGrants(departmentId),
+        enabled: !!departmentId,
+        staleTime: 2 * 60 * 1000
     })
 }

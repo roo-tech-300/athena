@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { X } from 'lucide-react'
 
 interface ModalProps {
     isOpen: boolean
@@ -84,7 +85,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }: Moda
                             padding: '4px'
                         }}
                     >
-                        ×
+                        <X size={20} />
                     </button>
                 </div>
 

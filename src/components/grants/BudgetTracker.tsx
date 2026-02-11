@@ -1,17 +1,21 @@
 import { useState } from 'react'
 import {
+    TrendingUp,
     TrendingDown,
     DollarSign,
     PieChart,
-    MoreHorizontal,
     ShoppingBag,
+    Plus,
+    History,
     Download,
     FileUp,
     FileText,
     ExternalLink,
     Calendar,
     ArrowRight,
-    Link as LinkIcon
+    Link as LinkIcon,
+    X,
+    MoreHorizontal
 } from 'lucide-react'
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
@@ -545,7 +549,7 @@ export default function BudgetTracker({ grant, myMembership }: { grant?: any, my
                     <div style={{ background: 'white', padding: '32px', borderRadius: '16px', width: '100%', maxWidth: '700px', maxHeight: '80vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                             <h2 style={{ fontWeight: 700 }}>Transaction History</h2>
-                            <button onClick={() => setIsHistoryModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}>×</button>
+                            <button onClick={() => setIsHistoryModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', color: 'var(--color-gray-400)' }}><X size={20} /></button>
                         </div>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
