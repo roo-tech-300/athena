@@ -48,6 +48,8 @@ export const createDeliverableTasks = async (
     status: "Completed" | "Progress",
     assignedMembers: string[],
     description?: string,
+    isTransaction?: boolean,
+    transaction?: string,
 ) => {
     const res = await database.createRow(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
@@ -60,6 +62,8 @@ export const createDeliverableTasks = async (
             status,
             dueDate,
             assignedMembers,
+            isTransaction: isTransaction || false,
+            transaction,
         }
     )
     return res

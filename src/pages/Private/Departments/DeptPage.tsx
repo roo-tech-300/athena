@@ -7,11 +7,9 @@ import {
     TrendingUp,
     CreditCard,
     Info,
-    ExternalLink,
     CheckCircle2,
     Clock,
     DollarSign,
-    Users,
     ShieldCheck,
     Check
 } from 'lucide-react'

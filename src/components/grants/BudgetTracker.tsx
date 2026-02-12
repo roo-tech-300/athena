@@ -1,12 +1,9 @@
 import { useState } from 'react'
 import {
-    TrendingUp,
     TrendingDown,
     DollarSign,
     PieChart,
     ShoppingBag,
-    Plus,
-    History,
     Download,
     FileUp,
     FileText,
