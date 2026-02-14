@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FileText, Calendar, File, FolderOpen, Plus, CheckCircle, Clock } from 'lucide-react'
+import { FileText, Calendar, File, FolderOpen, Plus, CheckCircle, Clock, BookOpen, Users } from 'lucide-react'
 import { useGoogleLogin } from '@react-oauth/google'
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
@@ -12,6 +12,7 @@ import { useGetUser } from '../../hooks/useUser'
 
 const getTypeConfig = (type?: string) => {
     switch (type) {
+        case 'Report':
         case 'report':
             return {
                 color: '#3b82f6',
@@ -19,6 +20,22 @@ const getTypeConfig = (type?: string) => {
                 borderColor: 'rgba(59, 130, 246, 0.3)',
                 label: 'Report',
                 icon: FileText
+            }
+        case 'Journal Paper':
+            return {
+                color: '#8b5cf6',
+                bg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%)',
+                borderColor: 'rgba(139, 92, 246, 0.3)',
+                label: 'Journal',
+                icon: BookOpen
+            }
+        case 'Conference':
+            return {
+                color: '#f97316',
+                bg: 'linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.06) 100%)',
+                borderColor: 'rgba(249, 115, 22, 0.3)',
+                label: 'Conference',
+                icon: Users
             }
         default:
             return {
@@ -77,6 +94,7 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
     const [isCreating, setIsCreating] = useState(false)
     const [formData, setFormData] = useState({
         title: '',
+        type: 'Report',
         action: 'Milestone' as 'Milestone' | 'Deliverable',
         actionItem: ''
     })
@@ -111,12 +129,13 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                     grant: grant.$id,
                     action: formData.action,
                     actionItem: formData.actionItem,
-                    creator: user?.$id || ''
+                    creator: user?.$id || '',
+                    type: formData.type
                 })
 
                 addToast("Document created and connected successfully!", "success")
                 setIsModalOpen(false)
-                setFormData({ title: '', action: 'Milestone', actionItem: '' })
+                setFormData({ title: '', type: 'Report', action: 'Milestone', actionItem: '' })
 
                 // 3. Redirect - using window.open fallback check
                 const docUrl = `https://docs.google.com/document/d/${docId}/edit`;
@@ -275,7 +294,7 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                                     </td>
                                 </tr>
                             ) : visibleDocuments.map((doc: any) => {
-                                const typeConfig = getTypeConfig('google-doc')
+                                const typeConfig = getTypeConfig(doc.type)
                                 const statusConfig = getStatusConfig(doc.status)
                                 const TypeIcon = typeConfig.icon
 
@@ -403,6 +422,22 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                                         style={inputStyle}
                                         disabled={isCreating}
                                     />
+                                </div>
+
+                                <div>
+                                    <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: 'var(--space-2)' }}>Document Type *</label>
+                                    <select
+                                        required
+                                        value={formData.type}
+                                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                        style={inputStyle}
+                                        disabled={isCreating}
+                                    >
+                                        <option value="Report">Report</option>
+                                        <option value="Journal Paper">Journal Paper</option>
+                                        <option value="Conference">Conference</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>

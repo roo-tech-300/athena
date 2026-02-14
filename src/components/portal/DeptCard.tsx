@@ -68,7 +68,7 @@ const DeptCard: React.FC<DeptCardProps> = ({ dept, grantCount, totalFunding }) =
             </div>
 
             <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                <Button variant="primary" size="sm" style={{ flex: 1, padding: '12px 0' }} onClick={() => navigate(`/department/${dept.$id}`)}>Department Info</Button>
+                <Button variant="primary" size="sm" style={{ flex: 1, padding: '12px 0' }} onClick={() => navigate(`/department/${dept.$id}`)}>Research Group Info</Button>
             </div>
         </div>
     )

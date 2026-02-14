@@ -11,7 +11,7 @@ export const SUBSCRIPTION_PLANS = [
             'Full Institutional Governance',
             'Priority Support',
             'Advanced Financial Reporting',
-            'Multiple Department Members'
+            'Multiple Group Members'
         ],
         paystackPlanCode: import.meta.env.VITE_PAYSTACK_PLAN_ID_STANDARD
     }

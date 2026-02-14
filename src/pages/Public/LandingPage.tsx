@@ -111,7 +111,7 @@ export default function LandingPage() {
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                                     {[
                                         { name: 'Grant Admin', action: 'Uploaded proposal draft v2', time: '5m' },
-                                        { name: 'Dept Head', action: 'Approved budget request', time: '1h' },
+                                        { name: 'Group Lead', action: 'Approved budget request', time: '1h' },
                                         { name: 'System', action: 'Reminder: NSF Deadline', time: '1d' }
                                     ].map((collab, i) => (
                                         <div key={i} style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
@@ -152,7 +152,7 @@ export default function LandingPage() {
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                                     <div style={{ padding: 'var(--space-3)', background: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
-                                            <div style={{ fontSize: 'var(--text-xs)', opacity: 0.8 }}>Active Dept</div>
+                                            <div style={{ fontSize: 'var(--text-xs)', opacity: 0.8 }}>Active Group</div>
                                             <div style={{ fontWeight: 600 }}>Faculty of Science</div>
                                         </div>
                                         <div style={{ fontSize: 'var(--text-xl)' }}><Landmark size={24} /></div>
@@ -181,11 +181,11 @@ export default function LandingPage() {
                             </div>
                             <div>
                                 <h4 style={{ color: 'var(--color-primary)', marginBottom: 'var(--space-2)', fontWeight: 700 }}>02. Role-Based Governance</h4>
-                                <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-base)', lineHeight: 1.5 }}>Secure access control for Lecturers, Administrators, and Viewers. Manage departmental onboarding with university-wide multi-tenancy.</p>
+                                <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-base)', lineHeight: 1.5 }}>Secure access control for Lecturers, Administrators, and Viewers. Manage research group onboarding with university-wide multi-tenancy.</p>
                             </div>
                             <div>
                                 <h4 style={{ color: 'var(--color-primary)', marginBottom: 'var(--space-2)', fontWeight: 700 }}>03. Advanced Reporting</h4>
-                                <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-base)', lineHeight: 1.5 }}>Integrated analytics for departmental heads. Automate success rate visualizations and funding trend exports with one click.</p>
+                                <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-base)', lineHeight: 1.5 }}>Integrated analytics for research group heads. Automate success rate visualizations and funding trend exports with one click.</p>
                             </div>
                         </div>
                     </div>
@@ -204,7 +204,7 @@ export default function LandingPage() {
                         }}>
                             <h2 style={{ fontSize: 'var(--text-3xl)', marginBottom: 'var(--space-6)', color: 'white' }}>Streamline University Research</h2>
                             <p style={{ color: 'var(--color-gray-400)', marginBottom: 'var(--space-8)', maxWidth: '650px', marginInline: 'auto', fontSize: 'var(--text-lg)' }}>
-                                Bring your department into the future of management. Designed for technical and non-technical staff alike.
+                                Bring your research group into the future of management. Designed for technical and non-technical staff alike.
                             </p>
                             <Link to="/signup">
                                 <Button size="lg" style={{ background: 'white', color: 'var(--color-gray-900)', fontWeight: 'bold', paddingInline: 'var(--space-16)' }}>Deploy Athena for Your Institution</Button>

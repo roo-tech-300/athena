@@ -240,7 +240,7 @@ export default function GrantPage() {
                     </div>
 
                     {activeTab === 'Dashboard' ? (
-                        <Dashboard grant={grant} myMembership={myMembership} />
+                        <Dashboard grant={grant} myMembership={myMembership} setActiveTab={setActiveTab} />
                     ) : activeTab === 'Budget tracker' ? (
                         <BudgetTracker grant={grant} myMembership={myMembership} />
                     ) : activeTab === 'Milestones' ? (

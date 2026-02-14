@@ -15,7 +15,7 @@ const formatRelativeTime = (dateString: string) => {
     return `${Math.floor(diffInSeconds / 86400)}d ago`;
 }
 
-export default function GrantDashboard({ grant, myMembership }: { grant?: any, myMembership?: any }) {
+export default function GrantDashboard({ grant, myMembership, setActiveTab }: { grant?: any, myMembership?: any, setActiveTab?: (tab: string) => void }) {
     const { data: activities = [], isLoading: activitiesLoading } = useActivities(grant?.$id || '');
     const { data: milestones = [], isLoading: milestonesLoading } = useGetMilestones(grant?.$id || '');
     const { data: documents = [], isLoading: docsLoading } = useGetDocuments(grant?.$id || '');
@@ -31,15 +31,15 @@ export default function GrantDashboard({ grant, myMembership }: { grant?: any, m
     const isStaff = isPI || isReviewer || isFO;
 
     const upcomingMilestones = milestones
-        .filter(m => m.status !== 'Completed')
-        .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+        .filter((m: any) => m.status !== 'Completed')
+        .sort((a: any, b: any) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
         .slice(0, 3);
 
     let metrics = [
         { label: 'Completion', value: (grant.completion || 0) + '%', icon: Activity, color: 'var(--color-primary)' },
         { label: 'Team Size', value: grant.members?.length || 0, icon: Users, color: 'var(--color-accent-indigo)' },
         { label: isStaff ? 'Docs Ready' : 'My Documents', value: documents.filter((d: any) => d.status === 'Accepted').length.toString(), icon: FileText, color: 'var(--color-success)' },
-        { label: isStaff ? 'Milestones' : 'My Tasks', value: `${milestones.filter(m => m.status === 'Completed').length}/${milestones.length}`, icon: CheckCircle2, color: 'var(--color-warning)' },
+        { label: isStaff ? 'Milestones' : 'My Tasks', value: `${milestones.filter((m: any) => m.status === 'Completed').length}/${milestones.length}`, icon: CheckCircle2, color: 'var(--color-warning)' },
     ];
 
     if (isFO) {
@@ -50,6 +50,8 @@ export default function GrantDashboard({ grant, myMembership }: { grant?: any, m
             color: 'var(--color-accent-purple)'
         });
     }
+
+    const canViewActivity = isPI || isReviewer;
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
@@ -72,36 +74,67 @@ export default function GrantDashboard({ grant, myMembership }: { grant?: any, m
 
             {/* Layout Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
-                <div className="card-neumorphic" style={{ gridColumn: 'span 8', minHeight: '350px' }}>
-                    <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-6)' }}>Recent Activity</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                        {activities.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: 'var(--space-10)', color: 'var(--color-gray-400)' }}>
-                                No recent activity logged.
-                            </div>
-                        ) : activities.map((act: any, i: number) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: 'var(--space-4)', background: 'var(--color-gray-50)', borderRadius: 'var(--radius-md)' }}>
-                                <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-full)', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700, color: 'var(--color-primary)', boxShadow: 'var(--shadow-sm)' }}>
-                                    {act.entityType?.[0] || 'A'}
+                {canViewActivity && (
+                    <div className="card-neumorphic" style={{ gridColumn: 'span 8', minHeight: '350px' }}>
+                        <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-6)' }}>Recent Activity</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                            {activities.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: 'var(--space-10)', color: 'var(--color-gray-400)' }}>
+                                    No recent activity logged.
                                 </div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>{act.entityType} Update</div>
-                                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{act.description}</div>
-                                </div>
-                                <span style={{ fontSize: '10px', color: 'var(--color-gray-400)' }}>{formatRelativeTime(act.$createdAt)}</span>
-                            </div>
-                        ))}
+                            ) : activities.map((act: any, i: number) => {
+                                const isClickable = (act.entityType === 'Deliverable' || act.entityType === 'Budget') && setActiveTab;
+                                return (
+                                    <div
+                                        key={i}
+                                        onClick={() => {
+                                            if (act.entityType === 'Deliverable' && setActiveTab) setActiveTab('Deliverables')
+                                            if (act.entityType === 'Budget' && setActiveTab) setActiveTab('Budget tracker')
+                                        }}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 'var(--space-4)',
+                                            padding: 'var(--space-4)',
+                                            background: 'var(--color-gray-50)',
+                                            borderRadius: 'var(--radius-md)',
+                                            cursor: isClickable ? 'pointer' : 'default',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (isClickable) {
+                                                e.currentTarget.style.background = 'var(--color-gray-100)'
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (isClickable) {
+                                                e.currentTarget.style.background = 'var(--color-gray-50)'
+                                            }
+                                        }}
+                                    >
+                                        <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-full)', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700, color: 'var(--color-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                                            {act.entityType?.[0] || 'A'}
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>{act.entityType} Update</div>
+                                            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{act.description}</div>
+                                        </div>
+                                        <span style={{ fontSize: '10px', color: 'var(--color-gray-400)' }}>{formatRelativeTime(act.$createdAt)}</span>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
-                </div>
+                )}
 
-                <div className="card-neumorphic glass" style={{ gridColumn: 'span 4' }}>
+                <div className="card-neumorphic glass" style={{ gridColumn: canViewActivity ? 'span 4' : 'span 12' }}>
                     <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-6)' }}>Upcoming Deadlines</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                         {upcomingMilestones.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: 'var(--space-10)', color: 'var(--color-gray-400)' }}>
                                 No milestones to show!
                             </div>
-                        ) : upcomingMilestones.map((d, i) => (
+                        ) : upcomingMilestones.map((d: any, i: number) => (
                             <div key={i} style={{
                                 borderLeft: `4px solid ${d.priority === 'High' ? 'var(--color-error)' : d.priority === 'Medium' ? 'var(--color-warning)' : 'var(--color-primary)'}`,
                                 padding: 'var(--space-4)',

@@ -4,14 +4,15 @@ import { queryClient } from "../lib/react-query"
 
 export const useCreateDocument = () => {
     return useMutation({
-        mutationFn: ({ doc, grant, title, action, actionItem, creator }: {
+        mutationFn: ({ doc, grant, title, action, actionItem, creator, type }: {
             doc: string,
             grant: string,
             title: string,
             action: "Milestone" | "Deliverable",
             actionItem: string,
-            creator: string
-        }) => createDocument(doc, grant, title, action, actionItem, creator),
+            creator: string,
+            type: string
+        }) => createDocument(doc, grant, title, action, actionItem, creator, type),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['documents', variables.grant] })
         }

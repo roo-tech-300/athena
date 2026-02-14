@@ -56,6 +56,7 @@ export const createTransactions = async (
     item: string,
     amount: number,
     grantId: string,
+    description: string,
     file?: File,
 ) => {
     try {
@@ -78,6 +79,7 @@ export const createTransactions = async (
                 budgetItem: item,
                 amount,
                 grant: grantId,
+                description,
                 ...(proofId && { proof: proofId })
             }
         )

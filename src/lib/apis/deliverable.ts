@@ -2,21 +2,21 @@ import { database, ID, Query } from "../appwrite"
 import { getGrantMembers } from "./grants"
 
 export const createDeliverables = async (
-    grant: string, 
-    title: string, 
-    dueDate: string, 
-    status?: "Completed" | "Progress", 
+    grant: string,
+    title: string,
+    dueDate: string,
+    status?: "Completed" | "Progress",
 ) => {
-    console.log("Form Data", {grant, title, dueDate, status})
+    console.log("Form Data", { grant, title, dueDate, status })
     const res = await database.createRow(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
         import.meta.env.VITE_APPWRITE_DELIVERABLES_ID,
         ID.unique(),
         {
-           grant,
-           title,
-           dueDate,
-           status,
+            grant,
+            title,
+            dueDate,
+            status,
         }
     )
     return res
@@ -45,11 +45,11 @@ export const createDeliverableTasks = async (
     deliverable: string,
     title: string,
     dueDate: string,
-    status: "Completed" | "Progress",
+    status: "Completed" | "Progress" | "PendingApproval",
     assignedMembers: string[],
     description?: string,
-    isTransaction?: boolean,
-    transaction?: string,
+    action?: "Transaction" | "Other",
+    actionItem?: string,
 ) => {
     const res = await database.createRow(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
@@ -62,9 +62,40 @@ export const createDeliverableTasks = async (
             status,
             dueDate,
             assignedMembers,
-            isTransaction: isTransaction || false,
-            transaction,
+            action,
+            actionItem,
         }
+    )
+    return res
+}
+
+export const updateDeliverableTask = async (
+    taskId: string,
+    data: {
+        status?: "Completed" | "Progress" | "PendingApproval",
+        actionItem?: string,
+    }
+) => {
+    const res = await database.updateRow(
+        import.meta.env.VITE_APPWRITE_DATABASE_ID,
+        import.meta.env.VITE_APPWRITE_DELIVERABLE_TASKS_ID,
+        taskId,
+        data
+    )
+    return res
+}
+
+export const updateDeliverable = async (
+    deliverableId: string,
+    data: {
+        status?: "Completed" | "Progress",
+    }
+) => {
+    const res = await database.updateRow(
+        import.meta.env.VITE_APPWRITE_DATABASE_ID,
+        import.meta.env.VITE_APPWRITE_DELIVERABLES_ID,
+        deliverableId,
+        data
     )
     return res
 }

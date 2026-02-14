@@ -263,7 +263,7 @@ export default function Portal() {
                                             cursor: 'pointer'
                                         }}
                                     >
-                                        {tab === 'grants' ? 'Grants' : 'Manage Departments'}
+                                        {tab === 'grants' ? 'Grants' : 'Manage Research Groups'}
                                     </button>
                                 ))}
                             </div>
@@ -405,19 +405,19 @@ export default function Portal() {
                             <div style={{ gridColumn: 'span 12' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-8)' }}>
                                     <div>
-                                        <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>Grants Groups & Departments</h2>
+                                        <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>Grants Groups & Research Groups</h2>
                                         <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Manage administrative access and billing for your research organizations.</p>
                                     </div>
-                                    <Button variant="primary" style={{ borderRadius: 'var(--radius-full)' }} onClick={() => setIsCreateDeptModalOpen(true)}>+ Create Department</Button>
+                                    <Button variant="primary" style={{ borderRadius: 'var(--radius-full)' }} onClick={() => setIsCreateDeptModalOpen(true)}>+ Create Research Group</Button>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
                                     {departments.length === 0 ? (
                                         <div style={{ gridColumn: 'span 12', textAlign: 'center', padding: 'var(--space-20)', background: 'white', borderRadius: 'var(--radius-xl)' }}>
                                             <Building2 size={48} style={{ color: 'var(--color-gray-200)', marginBottom: 'var(--space-4)' }} />
-                                            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 600 }}>No departments found</h3>
+                                            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 600 }}>No research groups found</h3>
                                             <p style={{ color: 'var(--color-gray-500)', marginBottom: 'var(--space-6)' }}>You haven't joined or created any funding groups yet.</p>
-                                            <Button variant="primary" onClick={() => setIsCreateDeptModalOpen(true)}>Create First Department</Button>
+                                            <Button variant="primary" onClick={() => setIsCreateDeptModalOpen(true)}>Create First Research Group</Button>
                                         </div>
                                     ) : (
                                         departments.map((dept: any) => (
@@ -505,7 +505,7 @@ export default function Portal() {
             </Modal>
 
             <Modal isOpen={isCreateDeptModalOpen} onClose={() => setIsCreateDeptModalOpen(false)} title="Create Funding Group" footer={<><Button variant="ghost" onClick={() => setIsCreateDeptModalOpen(false)}>Cancel</Button><Button onClick={handleCreateDepartment} disabled={isCreatingDept}>{isCreatingDept ? <Loader size="sm" variant="white" /> : 'Create Group'}</Button></>}>
-                <div className="input-group"><label className="input-label">Name of Department / Division</label><input type="text" className="input-field" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="e.g. Biomedical Sciences" /></div>
+                <div className="input-group"><label className="input-label">Name of Research Group</label><input type="text" className="input-field" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="e.g. Biomedical Sciences" /></div>
             </Modal>
         </div>
     )

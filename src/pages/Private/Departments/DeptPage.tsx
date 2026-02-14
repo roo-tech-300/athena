@@ -77,7 +77,7 @@ export default function DeptPage() {
     if (!dept) {
         return (
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                <h2>Department not found</h2>
+                <h2>Research Group not found</h2>
                 <Button onClick={() => navigate('/portal')}>Back to Portal</Button>
             </div>
         )
@@ -256,7 +256,7 @@ export default function DeptPage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-6)' }}>
                                     {grants.length === 0 ? (
                                         <div style={{ gridColumn: 'span 3', textAlign: 'center', padding: 'var(--space-20)', background: 'white', borderRadius: 'var(--radius-2xl)', border: '1px solid rgba(0,0,0,0.05)' }}>
-                                            <h3 style={{ color: 'var(--color-gray-400)' }}>No grants recorded for this department.</h3>
+                                            <h3 style={{ color: 'var(--color-gray-400)' }}>No grants recorded for this research group.</h3>
                                         </div>
                                     ) : grants.map((g: any) => (
                                         <GrantCard
@@ -305,7 +305,7 @@ export default function DeptPage() {
                                             </div>
                                             <div>
                                                 <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: 800, marginBottom: '8px' }}>Subscription Inactive</h3>
-                                                <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)', maxWidth: '300px' }}>Your department access is currently limited. Pay for the Standard plan to unlock 5 grants and full governance features.</p>
+                                                <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)', maxWidth: '300px' }}>Your research group access is currently limited. Pay for the Standard plan to unlock 5 grants and full governance features.</p>
                                             </div>
                                             <Button variant="primary" size="lg" onClick={() => setIsPlanModalOpen(true)} disabled={initializing || updating}>
                                                 {initializing || updating ? <Loader /> : 'Pay & Activate Monthly Access'}
