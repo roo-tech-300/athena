@@ -92,12 +92,66 @@ export const joinGrantByCode = async (code: string, userId: string) => {
     }
 }
 
+export const checkUserExists = async (email: string) => {
+    try {
+        const userSearch = await getUserByEmail(email);
+        return {
+            exists: userSearch.rows.length > 0,
+            user: userSearch.rows.length > 0 ? userSearch.rows[0] : null
+        };
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const createGrantInvitation = async (grantId: string, email: string, role: Role[]) => {
+    try {
+        // Check if invitation already exists
+        const existingInvites = await database.listRows(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_INVITATIONS_ID,
+            [
+                Query.equal("email", email),
+                Query.equal("grant", grantId)
+            ]
+        )
+
+        if (existingInvites.rows.length > 0) {
+            throw new Error("INVITATION_ALREADY_SENT")
+        }
+
+        // Create invitation token
+        const invitationToken = ID.unique();
+        await database.createRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_INVITATIONS_ID,
+            ID.unique(),
+            {
+                email,
+                grant: grantId,
+                role,
+                token: invitationToken,
+                status: "Pending"
+            }
+        )
+
+        return { token: invitationToken };
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export const addGrantMember = async (grantId: string, email: string, role: Role[]) => {
     try {
         const userSearch = await getUserByEmail(email);
+        
+        // If user doesn't exist, throw error so caller can handle invitation flow
         if (userSearch.rows.length === 0) {
             throw new Error("USER_NOT_FOUND")
         }
+        
         const user = userSearch.rows[0];
         const userId = user.$id;
 
@@ -115,7 +169,8 @@ export const addGrantMember = async (grantId: string, email: string, role: Role[
             throw new Error("ALREADY_MEMBER")
         }
 
-        return await createGrantMember(grantId, userId, role, "Accepted")
+        const member = await createGrantMember(grantId, userId, role, "Accepted")
+        return member;
     } catch (error) {
         console.error(error);
         throw error
@@ -391,5 +446,42 @@ export const getDepartmentGrants = async (departmentId: string) => {
     } catch (error) {
         console.error(error)
         throw error
+    }
+}
+
+export const acceptInvitationOnSignup = async (token: string, userId: string) => {
+    try {
+        // Find invitation by token
+        const invitationRes = await database.listRows(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_INVITATIONS_ID,
+            [Query.equal("token", token)]
+        )
+
+        if (invitationRes.rows.length === 0) {
+            throw new Error("INVITATION_NOT_FOUND")
+        }
+
+        const invitation = invitationRes.rows[0];
+
+        if (invitation.status !== "Pending") {
+            throw new Error("INVITATION_ALREADY_USED")
+        }
+
+        // Create grant membership
+        await createGrantMember(invitation.grant, userId, invitation.role, "Accepted")
+
+        // Mark invitation as accepted
+        await database.updateRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_GRANT_INVITATIONS_ID,
+            invitation.$id,
+            { status: "Accepted" }
+        )
+
+        return invitation.grant;
+    } catch (error) {
+        console.error(error);
+        throw error;
     }
 }

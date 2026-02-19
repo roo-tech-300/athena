@@ -8,7 +8,8 @@ export const createBudgetItem = async (
     status: string,
     price: number,
 ) => {
-    const res = await database.createRow(
+    try {
+        const res = await database.createRow(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
         import.meta.env.VITE_APPWRITE_BUDGET_ITEMS_ID,
         ID.unique(),
@@ -22,6 +23,10 @@ export const createBudgetItem = async (
     )
     createActivity(grantId, "Project Budget has been updated", "Budget", res.$id)
     return res
+    } catch (error) {
+        console.error("Error creating budget item", error)
+    }
+ 
 }
 
 export const getBudgetItems = async (grantId: string) => {

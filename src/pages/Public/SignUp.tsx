@@ -1,13 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../../components/ui/Button'
-import { Mail, Lock, User, ArrowRight } from 'lucide-react'
-import { useState } from 'react'
+import { Mail, Lock, User, ArrowRight, Gift } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { useCreateAccount } from '../../hooks/useAuth'
 import { useToast } from '../../components/ui/Toast'
 import Loader from '../../components/ui/Loader'
 
 export default function SignUp() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const invitationToken = searchParams.get('invite');
+    
     const [title, setTitle] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -17,6 +20,16 @@ export default function SignUp() {
     const { addToast } = useToast()
     const { mutateAsync: signupMutation, isPending: loading } = useCreateAccount()
 
+    // Pre-fill email if invitation token exists
+    useEffect(() => {
+        if (invitationToken) {
+            const inviteEmail = searchParams.get('email');
+            if (inviteEmail) {
+                setEmail(inviteEmail);
+            }
+        }
+    }, [invitationToken, searchParams]);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!title) {
@@ -24,7 +37,10 @@ export default function SignUp() {
             return;
         }
         try {
-            await signupMutation({ title, firstName, lastName, email, password });
+            await signupMutation({ title, firstName, lastName, email, password, invitationToken });
+            if (invitationToken) {
+                addToast("Account created! You've joined the grant.", "success");
+            }
             navigate('/portal');
         } catch (error) {
             console.error("Error creating account:", error);
@@ -81,6 +97,28 @@ export default function SignUp() {
 
                 <div className="auth-card" style={{ paddingTop: '20px' }}>
                     <div className="card-neumorphic" style={{ padding: '20px', border: 'none', background: 'white' }}>
+                        {invitationToken && (
+                            <div style={{
+                                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+                                border: '1px solid rgba(139, 92, 246, 0.2)',
+                                borderRadius: 'var(--radius-lg)',
+                                padding: 'var(--space-4)',
+                                marginBottom: 'var(--space-6)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-3)'
+                            }}>
+                                <Gift size={20} style={{ color: 'var(--color-primary)' }} />
+                                <div>
+                                    <p style={{ fontSize: 'var(--text-sm)', fontWeight: 600, margin: 0, color: 'var(--color-primary)' }}>
+                                        You've been invited!
+                                    </p>
+                                    <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-600)', margin: '2px 0 0 0' }}>
+                                        Complete signup to join the grant automatically
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                         <div style={{ marginBottom: 'var(--space-8)' }}>
                             <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>Create Account</h1>
                             <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>

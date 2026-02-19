@@ -1,6 +1,7 @@
 import { account, database, ID } from "../appwrite"
+import { acceptInvitationOnSignup } from "./grants"
 
-export const createAccount = async (title: string, firstName: string, lastName: string, email: string, password: string) => {
+export const createAccount = async (title: string, firstName: string, lastName: string, email: string, password: string, invitationToken?: string) => {
     try {
         const fullName = `${title} ${firstName} ${lastName}`
         const user = await account.create(
@@ -22,6 +23,17 @@ export const createAccount = async (title: string, firstName: string, lastName: 
         )
 
         await loginAccount(email, password)
+
+        // If there's an invitation token, accept it
+        if (invitationToken) {
+            try {
+                await acceptInvitationOnSignup(invitationToken, user.$id)
+            } catch (error) {
+                console.error("Failed to accept invitation:", error)
+                // Don't throw - account was created successfully
+            }
+        }
+
         return dbUser
     } catch (error) {
         console.log(error)

@@ -3,7 +3,7 @@ import { Mail, Award, Clock, Star, Users, CheckCircle, XCircle, Shield } from 'l
 import Button from '../ui/Button'
 import Loader from '../ui/Loader'
 import Modal from '../ui/Modal'
-import { useGrantMembers, useUpdateGrantMember, useAddGrantMember } from '../../hooks/useGrants'
+import { useGrantMembers, useUpdateGrantMember, useAddGrantMember, useCheckUserExists, useCreateGrantInvitation } from '../../hooks/useGrants'
 import { useAuth } from '../../useContext/context'
 import { toast } from 'react-toastify'
 import { getUserInitials } from '../../utils/user'
@@ -64,10 +64,15 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
     const { data: members, isLoading: membersLoading, refetch: refreshMembers } = useGrantMembers(grant?.$id);
     const { mutateAsync: updateMember, isPending: isUpdatingMember } = useUpdateGrantMember();
     const { mutateAsync: addMember, isPending: isAddingMember } = useAddGrantMember();
+    const { mutateAsync: checkUser, isPending: isCheckingUser } = useCheckUserExists();
+    const { mutateAsync: createInvitation, isPending: isCreatingInvitation } = useCreateGrantInvitation();
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isInviteConfirmModalOpen, setIsInviteConfirmModalOpen] = useState(false);
     const [newMemberEmail, setNewMemberEmail] = useState('');
     const [newMemberRoles, setNewMemberRoles] = useState<Role[]>(['Researcher']);
+    const [pendingInvitationEmail, setPendingInvitationEmail] = useState('');
+    const [pendingInvitationToken, setPendingInvitationToken] = useState('');
 
     if (!grant || membersLoading) {
         return <Loader size="xl" label="Synchronizing team data..." />
@@ -126,23 +131,81 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
             return;
         }
         try {
-            await addMember({
-                grantId: grant.$id,
-                email: newMemberEmail,
-                role: newMemberRoles
-            });
-            toast.success("Member added to project");
-            setIsAddModalOpen(false);
-            setNewMemberEmail('');
-            setNewMemberRoles(['Researcher']);
+            // First, check if user exists WITHOUT creating anything in DB
+            const userCheck = await checkUser(newMemberEmail);
+            
+            if (!userCheck.exists) {
+                // User doesn't exist - show confirmation modal BEFORE creating invitation
+                setPendingInvitationEmail(newMemberEmail);
+                setIsAddModalOpen(false);
+                setIsInviteConfirmModalOpen(true);
+            } else {
+                // User exists - add them directly
+                await addMember({
+                    grantId: grant.$id,
+                    email: newMemberEmail,
+                    role: newMemberRoles
+                });
+                toast.success("Member added to project");
+                setIsAddModalOpen(false);
+                setNewMemberEmail('');
+                setNewMemberRoles(['Researcher']);
+            }
         } catch (error: any) {
-            if (error.message === 'USER_NOT_FOUND') {
-                toast.error("User with this email not found on Athena.");
-            } else if (error.message === 'ALREADY_MEMBER') {
+            if (error.message === 'ALREADY_MEMBER') {
                 toast.error("This user is already a member of this grant.");
             } else {
                 toast.error("Failed to add member");
             }
+        }
+    }
+
+    const handleSendInvitationEmail = async () => {
+        try {
+            // NOW create the invitation in the database (after user confirmed)
+            const result = await createInvitation({
+                grantId: grant.$id,
+                email: pendingInvitationEmail,
+                role: newMemberRoles
+            });
+            
+            // Use the invitation token
+            const invitationUrl = `${window.location.origin}/signup?invite=${result.token}&email=${encodeURIComponent(pendingInvitationEmail)}`;
+            
+            // Copy invitation link to clipboard
+            try {
+                await navigator.clipboard.writeText(invitationUrl);
+                toast.success(
+                    <div>
+                        <strong>Invitation link copied!</strong>
+                        <p style={{ fontSize: '12px', marginTop: '4px' }}>Share it with {pendingInvitationEmail} via email or WhatsApp</p>
+                    </div>,
+                    { autoClose: 5000 }
+                );
+            } catch (clipboardError) {
+                // Fallback: show the link in a copyable toast
+                toast.info(
+                    <div>
+                        <strong>Invitation created!</strong>
+                        <p style={{ fontSize: '11px', marginTop: '4px', wordBreak: 'break-all' }}>{invitationUrl}</p>
+                    </div>,
+                    { autoClose: 10000 }
+                );
+            }
+            
+            // Reset and close
+            setIsInviteConfirmModalOpen(false);
+            setPendingInvitationEmail('');
+            setPendingInvitationToken('');
+            setNewMemberEmail('');
+            setNewMemberRoles(['Researcher']);
+        } catch (error: any) {
+            if (error.message === 'INVITATION_ALREADY_SENT') {
+                toast.warn("An invitation has already been sent to this email.");
+            } else {
+                toast.error("Failed to create invitation");
+            }
+            setIsInviteConfirmModalOpen(false);
         }
     }
 
@@ -469,6 +532,64 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                                 )
                             })}
                         </div>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Invitation Confirmation Modal */}
+            <Modal
+                isOpen={isInviteConfirmModalOpen}
+                onClose={() => {
+                    setIsInviteConfirmModalOpen(false);
+                    setPendingInvitationEmail('');
+                    setPendingInvitationToken('');
+                    setNewMemberEmail('');
+                    setNewMemberRoles(['Researcher']);
+                }}
+                title="User Not Found"
+                footer={<>
+                    <Button 
+                        variant="ghost" 
+                        onClick={() => {
+                            setIsInviteConfirmModalOpen(false);
+                            setPendingInvitationEmail('');
+                            setPendingInvitationToken('');
+                            setNewMemberEmail('');
+                            setNewMemberRoles(['Researcher']);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSendInvitationEmail}>
+                        Yes, Send Invitation
+                    </Button>
+                </>}
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+                    <div style={{
+                        background: 'rgba(245, 158, 11, 0.1)',
+                        border: '1px solid rgba(245, 158, 11, 0.3)',
+                        borderRadius: 'var(--radius-lg)',
+                        padding: 'var(--space-4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-3)'
+                    }}>
+                        <Mail size={24} style={{ color: 'var(--color-warning)' }} />
+                        <div>
+                            <p style={{ fontSize: 'var(--text-sm)', fontWeight: 600, margin: 0 }}>
+                                <strong>{pendingInvitationEmail}</strong> doesn't have an Athena account yet.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-600)', marginBottom: 'var(--space-4)' }}>
+                            Do you want to invite them to join your grant?
+                        </p>
+                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)', fontStyle: 'italic' }}>
+                            We'll copy the invitation link to your clipboard so you can share it via email, WhatsApp, or any other method.
+                        </p>
                     </div>
                 </div>
             </Modal>
