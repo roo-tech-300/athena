@@ -54,7 +54,7 @@ export default function DeptPage() {
                             deptId: id!,
                             data: {
                                 subscriptionStatus: 'Active',
-                                plan: 'Standard'
+                                Plan: 'Standard'
                             }
                         });
                         toast.success("Payment verified! Subscription activated.");
@@ -85,8 +85,8 @@ export default function DeptPage() {
 
     const plan = dept.plan || 'Free'
     const status = dept.subscriptionStatus || 'Inactive'
-    const limit = plan === 'Free' ? 1 : 5
-    const isInactive = status === 'Inactive' || plan === 'Free'
+    const limit = status === 'Active' ? 5 : 1
+    const isInactive = status === 'Inactive'
 
 
     const handleActivateSubscription = async () => {
@@ -104,7 +104,7 @@ export default function DeptPage() {
                 return;
             }
 
-            const data = await initializeSubscription(user.email, planCode);
+            const data = await initializeSubscription(user.email, planCode, id);
 
             // Redirect to Paystack's secure payment page
             if (data?.authorization_url) {

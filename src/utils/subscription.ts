@@ -9,11 +9,11 @@ export interface DepartmentSubscription {
  */
 export function isPremiumFeatureAllowed(department?: DepartmentSubscription): boolean {
     if (!department) return false
-    
-    const plan = department.plan || 'Free'
+
     const status = department.subscriptionStatus || 'Inactive'
-    
-    return plan === 'Standard' && status === 'Active'
+
+    // Premium features are only blocked if status is 'Inactive'
+    return status !== 'Inactive'
 }
 
 /**

@@ -29,6 +29,7 @@ export default function GrantDashboard({ grant, myMembership, setActiveTab }: { 
     const isReviewer = roles.includes('Reviewer');
     const isFO = roles.includes('Finance Officer');
     const isStaff = isPI || isReviewer || isFO;
+    const canViewBudgetActivities = isPI || isReviewer || isFO;
 
     const upcomingMilestones = milestones
         .filter((m: any) => m.status !== 'Completed')
@@ -82,7 +83,15 @@ export default function GrantDashboard({ grant, myMembership, setActiveTab }: { 
                                 <div style={{ textAlign: 'center', padding: 'var(--space-10)', color: 'var(--color-gray-400)' }}>
                                     No recent activity logged.
                                 </div>
-                            ) : activities.map((act: any, i: number) => {
+                            ) : activities
+                                .filter((act: any) => {
+                                    // Filter out Budget activities if user doesn't have permission
+                                    if (act.entityType === 'Budget' && !canViewBudgetActivities) {
+                                        return false;
+                                    }
+                                    return true;
+                                })
+                                .map((act: any, i: number) => {
                                 const isClickable = (act.entityType === 'Deliverable' || act.entityType === 'Budget') && setActiveTab;
                                 return (
                                     <div

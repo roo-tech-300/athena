@@ -15,13 +15,20 @@ export const paystack = axios.create({
  * Initializes a subscription transaction.
  * Usually, you'd do this and redirect the user to the `authorization_url`.
  */
-export const initializeSubscription = async (email: string, planCode: string) => {
+export const initializeSubscription = async (email: string, planCode: string, departmentId?: string) => {
     try {
+        const callbackUrl = departmentId
+            ? `${window.location.origin}/department/${departmentId}`
+            : `${window.location.origin}/portal`;
+
         const response = await paystack.post('/transaction/initialize', {
             email,
-            amount: 4500000, // This is overridden by the plan amount if the plan is set correctly
+            amount: 15000, // This is overridden by the plan amount if the plan is set correctly
             plan: planCode,
-            callback_url: window.location.origin + '/portal', // Redirect back after payment
+            callback_url: callbackUrl, // Redirect back after payment
+            metadata: {
+                departmentId: departmentId,
+            },
         });
         return response.data.data; // Includes authorization_url and reference
     } catch (error: any) {
