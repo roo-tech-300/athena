@@ -153,13 +153,10 @@ export default function DeptPage() {
                                     width: '80px',
                                     height: '80px',
                                     borderRadius: 'var(--radius-2xl)',
-                                    background: 'white',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     color: 'var(--color-primary)',
-                                    boxShadow: 'var(--shadow-lg)',
-                                    border: '1px solid rgba(0,0,0,0.05)'
                                 }}>
                                     <Building2 size={40} />
                                 </div>
