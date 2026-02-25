@@ -161,7 +161,7 @@ export default function DeptPage() {
                                     <Building2 size={40} />
                                 </div>
                                 <div>
-                                    <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800, marginBottom: '4px' }}>{dept.name}</h1>
+                                    <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800, marginBottom: '4px' }}>{dept.name || 'Research Group'}</h1>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                                         <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)', fontWeight: 600 }}>ID: {dept.$id}</span>
                                         <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--color-gray-300)' }} />
@@ -268,7 +268,7 @@ export default function DeptPage() {
                                                 completion: g.completion || 0,
                                                 description: g.description,
                                                 expectedFunding: g.expectedFunding,
-                                                departmentName: dept.name
+                                                departmentName: dept.name || 'Research Group'
                                             }}
                                             onDetails={() => { }}
                                             onWorkspace={(id) => navigate(`/grant/${id}`)}

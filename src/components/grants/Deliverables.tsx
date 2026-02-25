@@ -23,7 +23,6 @@ import { useGetBudgetItems, useGetTransactions } from '../../hooks/useBudget'
 import { createActivity } from '../../lib/apis/grants'
 import { useAuth } from '../../useContext/context'
 import CreateTransactionModal from '../budget/CreateTransactionModal'
-import { useQueryClient } from '@tanstack/react-query'
 import Modal from '../ui/Modal'
 
 interface DeliverableType {

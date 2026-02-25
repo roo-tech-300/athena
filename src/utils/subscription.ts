@@ -1,4 +1,6 @@
 export interface DepartmentSubscription {
+    $id?: string
+    name?: string
     plan?: 'Free' | 'Standard'
     subscriptionStatus?: 'Active' | 'Inactive'
 }

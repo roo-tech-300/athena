@@ -1,4 +1,3 @@
-import React from 'react'
 import { DollarSign, TrendingDown, PieChart, ShoppingBag } from 'lucide-react'
 import NairaSymbol from '../ui/NairaSymbol'
 import { formatMoneyCompact } from '../../utils/grant'

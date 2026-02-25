@@ -1,4 +1,4 @@
-import { Clock, ShieldAlert, Rocket, MessageSquare, ArrowLeft } from 'lucide-react'
+import { Clock, MessageSquare, ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
 

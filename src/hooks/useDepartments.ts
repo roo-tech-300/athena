@@ -12,7 +12,7 @@ export const useUserDepartments = (userId: string) => {
 }
 
 export const useDepartment = (deptId: string) => {
-    return useQuery<DepartmentSubscription & { $id: string }>({
+    return useQuery<DepartmentSubscription & { $id: string, name: string }>({
         queryKey: ["department", deptId],
         queryFn: () => getDepartment(deptId) as any,
         enabled: !!deptId,

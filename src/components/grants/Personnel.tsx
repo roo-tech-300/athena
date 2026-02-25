@@ -61,18 +61,17 @@ const getRoleConfig = (role: Role) => {
 export default function Personnel({ grant, myMembership }: { grant?: any, myMembership?: any }) {
     const [activeTab, setActiveTab] = useState<'Accepted' | 'Pending'>('Accepted');
     const { user: currentUser } = useAuth();
-    const { data: members, isLoading: membersLoading, refetch: refreshMembers } = useGrantMembers(grant?.$id);
+    const { data: members, isLoading: membersLoading } = useGrantMembers(grant?.$id);
     const { mutateAsync: updateMember, isPending: isUpdatingMember } = useUpdateGrantMember();
     const { mutateAsync: addMember, isPending: isAddingMember } = useAddGrantMember();
-    const { mutateAsync: checkUser, isPending: isCheckingUser } = useCheckUserExists();
-    const { mutateAsync: createInvitation, isPending: isCreatingInvitation } = useCreateGrantInvitation();
+    const { mutateAsync: checkUser } = useCheckUserExists();
+    const { mutateAsync: createInvitation, } = useCreateGrantInvitation();
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isInviteConfirmModalOpen, setIsInviteConfirmModalOpen] = useState(false);
     const [newMemberEmail, setNewMemberEmail] = useState('');
     const [newMemberRoles, setNewMemberRoles] = useState<Role[]>(['Researcher']);
     const [pendingInvitationEmail, setPendingInvitationEmail] = useState('');
-    const [pendingInvitationToken, setPendingInvitationToken] = useState('');
 
     if (!grant || membersLoading) {
         return <Loader size="xl" label="Synchronizing team data..." />
@@ -196,7 +195,6 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
             // Reset and close
             setIsInviteConfirmModalOpen(false);
             setPendingInvitationEmail('');
-            setPendingInvitationToken('');
             setNewMemberEmail('');
             setNewMemberRoles(['Researcher']);
         } catch (error: any) {
@@ -542,7 +540,6 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                 onClose={() => {
                     setIsInviteConfirmModalOpen(false);
                     setPendingInvitationEmail('');
-                    setPendingInvitationToken('');
                     setNewMemberEmail('');
                     setNewMemberRoles(['Researcher']);
                 }}
@@ -553,7 +550,6 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                         onClick={() => {
                             setIsInviteConfirmModalOpen(false);
                             setPendingInvitationEmail('');
-                            setPendingInvitationToken('');
                             setNewMemberEmail('');
                             setNewMemberRoles(['Researcher']);
                         }}

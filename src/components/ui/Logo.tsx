@@ -31,9 +31,9 @@ export default function Logo({
                 alt="Granto Logo"
                 style={{
                     width: `${size}px`,
-                    height: 'auto',
-                    flexShrink: 0,
-                    display: 'block'
+                    height: `${size}px`,
+                    objectFit: 'contain',
+                    flexShrink: 0
                 }}
             />
             {showText && (

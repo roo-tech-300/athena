@@ -1,4 +1,3 @@
-import React from 'react'
 import { X, ExternalLink } from 'lucide-react'
 import NairaSymbol from '../ui/NairaSymbol'
 import { storage } from '../../lib/appwrite'

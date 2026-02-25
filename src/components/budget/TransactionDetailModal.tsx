@@ -1,4 +1,3 @@
-import React from 'react'
 import { Calendar, Link as LinkIcon } from 'lucide-react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
