@@ -1,6 +1,6 @@
 import { generateGrantCode } from "../../utils/grant"
 import { database, ID, Query } from "../appwrite"
-import { getUserByEmail } from "./user";
+import { getUserByEmail, getUserById } from "./user";
 
 type Role = 'Principal Investigator' | 'Researcher' | 'Reviewer' | 'Finance Officer';
 
@@ -84,7 +84,32 @@ export const joinGrantByCode = async (code: string, userId: string) => {
             throw new Error("ALREADY_MEMBER")
         }
 
-        await createGrantMember(grantId, userId, ["Researcher"], "Pending")
+        const member = await createGrantMember(grantId, userId, ["Researcher"], "Pending")
+
+        // Send notification to PIs
+        try {
+            const [joiningUser, members] = await Promise.all([
+                getUserById(userId),
+                getGrantMembers(grantId)
+            ]);
+
+            const piIds = members
+                .filter((m: any) => m.role?.includes('Principal Investigator'))
+                .map((m: any) => typeof m.user === 'object' ? m.user.$id : m.user);
+
+            if (piIds.length > 0) {
+                await createActivity(
+                    grantId,
+                    `${joiningUser.name} requested to join the grant and is pending approval.`,
+                    "Personnel",
+                    member.$id,
+                    piIds
+                );
+            }
+        } catch (noticeError) {
+            console.error("Failed to send join notification:", noticeError);
+        }
+
         return grant
     } catch (error) {
         console.error(error)
@@ -146,12 +171,12 @@ export const createGrantInvitation = async (grantId: string, email: string, role
 export const addGrantMember = async (grantId: string, email: string, role: Role[]) => {
     try {
         const userSearch = await getUserByEmail(email);
-        
+
         // If user doesn't exist, throw error so caller can handle invitation flow
         if (userSearch.rows.length === 0) {
             throw new Error("USER_NOT_FOUND")
         }
-        
+
         const user = userSearch.rows[0];
         const userId = user.$id;
 
@@ -311,6 +336,7 @@ export const createActivity = async (
     description: string,
     entityType: string,
     entityId: string,
+    involvedUsers?: string[],
 ) => {
     try {
         const activity = await database.createRow(
@@ -321,7 +347,8 @@ export const createActivity = async (
                 grant,
                 description,
                 entityType,
-                entityId
+                entityId,
+                ...(involvedUsers && { involvedUsers })
             }
         )
         return activity

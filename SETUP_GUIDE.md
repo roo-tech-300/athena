@@ -1,6 +1,6 @@
-# Athena Setup Guide
+# Granto Setup Guide
 
-Complete guide for setting up the Athena project from scratch.
+Complete guide for setting up the Granto project from scratch.
 
 ## Prerequisites
 
@@ -21,10 +21,10 @@ Before you begin, ensure you have:
 cd Desktop
 
 # Create new Vite + React + TypeScript project
-npm create vite@latest athena -- --template react-ts
+npm create vite@latest Granto -- --template react-ts
 
 # Navigate into project
-cd athena
+cd Granto
 
 # Install dependencies
 npm install
@@ -436,13 +436,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 1. Go to [cloud.appwrite.io](https://cloud.appwrite.io/)
 2. Sign up or log in
-3. Create a new project called "Athena"
+3. Create a new project called "Granto"
 4. Copy the Project ID to your `.env` file
 
 ### 2. Create Database
 
 1. In your project, go to "Databases"
-2. Create a new database called "athena-production"
+2. Create a new database called "Granto-production"
 3. Copy the Database ID to your `.env` file
 
 ### 3. Create Collections
@@ -591,7 +591,7 @@ export function sleep(ms: number): Promise<void> {
 ### `src/lib/constants.ts`
 
 ```typescript
-export const APP_NAME = 'Athena'
+export const APP_NAME = 'Granto'
 export const APP_DESCRIPTION = 'University Grant Tracking & Management'
 
 export const GRANT_STATUSES = {
@@ -720,4 +720,4 @@ npm audit fix           # Fix security vulnerabilities
 
 ---
 
-**Your Athena project is now ready for development! 🚀**
+**Your Granto project is now ready for development! 🚀**

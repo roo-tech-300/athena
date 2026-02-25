@@ -1,7 +1,7 @@
 {
     "name": "paystack-webhook",
     "version": "1.0.0",
-    "description": "Appwrite function to handle Paystack webhooks for Athena",
+    "description": "Appwrite function to handle Paystack webhooks for Granto",
     "main": "src/main.js",
     "dependencies": {
         "node-appwrite": "^11.1.1",

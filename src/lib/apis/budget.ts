@@ -62,6 +62,7 @@ export const createTransactions = async (
     amount: number,
     grantId: string,
     description: string,
+    userId: string,
     file?: File,
 ) => {
     try {
@@ -88,6 +89,7 @@ export const createTransactions = async (
                 ...(proofId && { proof: proofId })
             }
         )
+        createActivity(grantId, `Transaction logged: ${description} — ₦${amount.toLocaleString()}`, "Transaction", res.$id, [userId])
         return res
     } catch (error) {
         console.error(error)

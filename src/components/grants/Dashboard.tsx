@@ -84,21 +84,27 @@ export default function GrantDashboard({ grant, myMembership, setActiveTab }: { 
                                     No recent activity logged.
                                 </div>
                             ) : activities
-                                .filter((act: any) => {
-                                    // Filter out Budget activities if user doesn't have permission
-                                    if (act.entityType === 'Budget' && !canViewBudgetActivities) {
-                                        return false;
-                                    }
+                            .filter((act: any) => {
+                                    const userId = myMembership?.user?.$id || myMembership?.user;
+                                    // Task activities: only visible to assigned members
+                                    if (act.entityType === 'Task') return act.involvedUsers?.includes(userId);
+                                    // PI, FO, and Reviewers see all other activities
+                                    if (canViewBudgetActivities) return true;
+                                    // Other users only see activities they are involved in
+                                    if (act.involvedUsers?.includes(userId)) return true;
+                                    // Filter out Budget/Transaction activities for non-privileged users
+                                    if (act.entityType === 'Budget' || act.entityType === 'Transaction') return false;
                                     return true;
                                 })
                                 .map((act: any, i: number) => {
-                                const isClickable = (act.entityType === 'Deliverable' || act.entityType === 'Budget') && setActiveTab;
+                                const isClickable = (act.entityType === 'Deliverable' || act.entityType === 'Budget' || act.entityType === 'Transaction' || act.entityType === 'Task' || act.entityType === 'Document') && setActiveTab;
                                 return (
                                     <div
                                         key={i}
                                         onClick={() => {
-                                            if (act.entityType === 'Deliverable' && setActiveTab) setActiveTab('Deliverables')
-                                            if (act.entityType === 'Budget' && setActiveTab) setActiveTab('Budget tracker')
+                                            if ((act.entityType === 'Deliverable' || act.entityType === 'Task') && setActiveTab) setActiveTab('Deliverables')
+                                            if ((act.entityType === 'Budget' || act.entityType === 'Transaction') && setActiveTab) setActiveTab('Budget tracker')
+                                            if (act.entityType === 'Document' && setActiveTab) setActiveTab('Documents')
                                         }}
                                         style={{
                                             display: 'flex',

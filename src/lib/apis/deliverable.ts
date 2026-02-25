@@ -1,13 +1,13 @@
 import { database, ID, Query } from "../appwrite"
-import { getGrantMembers } from "./grants"
+import { createActivity, getGrantMembers } from "./grants"
 
 export const createDeliverables = async (
     grant: string,
     title: string,
     dueDate: string,
+    userId: string,
     status?: "Completed" | "Progress",
 ) => {
-    console.log("Form Data", { grant, title, dueDate, status })
     const res = await database.createRow(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
         import.meta.env.VITE_APPWRITE_DELIVERABLES_ID,
@@ -19,6 +19,7 @@ export const createDeliverables = async (
             status,
         }
     )
+    createActivity(grant, `Deliverable created: ${title}`, "Deliverable", res.$id, [userId])
     return res
 }
 
@@ -47,6 +48,9 @@ export const createDeliverableTasks = async (
     dueDate: string,
     status: "Completed" | "Progress" | "PendingApproval",
     assignedMembers: string[],
+    grantId: string,
+    deliverableTitle: string,
+    involvedUserIds: string[],
     description?: string,
     action?: "Transaction" | "Other",
     actionItem?: string,
@@ -66,6 +70,7 @@ export const createDeliverableTasks = async (
             actionItem,
         }
     )
+    createActivity(grantId, `You have a task ${title} to complete under ${deliverableTitle} deliverables`, "Task", res.$id, involvedUserIds)
     return res
 }
 

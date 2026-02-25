@@ -1,6 +1,6 @@
 1. Visual Philosophy: “Soft Futurism for Institutions”
 
-Athena blends enterprise seriousness (universities, grants, governance) with modern softness (glassmorphism, gradients, neumorphism).
+Granto blends enterprise seriousness (universities, grants, governance) with modern softness (glassmorphism, gradients, neumorphism).
 
 Core traits
 
@@ -95,7 +95,7 @@ Font Weight Strategy
 
 Avoid thin weights
 
-Athena feels confident, not delicate.
+Granto feels confident, not delicate.
 
 4. Color Philosophy
 Neutral-First Palette
@@ -151,7 +151,7 @@ Data surfaces
 5. Card & Surface Language
 Card Types
 
-Athena uses three surface styles:
+Granto uses three surface styles:
 
 Neumorphic Cards
 
@@ -292,8 +292,8 @@ Could this live comfortably next to the dashboard?
 
 Does this feel calm at 9am and 9pm?
 
-If yes → it fits Athena.
+If yes → it fits Granto.
 
 10. One-Line Design North Star
 
-Athena should feel like a quiet, intelligent system that makes complex academic work feel ordered, transparent, and dignified.
+Granto should feel like a quiet, intelligent system that makes complex academic work feel ordered, transparent, and dignified.

@@ -1,9 +1,9 @@
-# Athena: Grant Tracking & Management Platform
+# Granto: Grant Tracking & Management Platform
 
 ## Product Requirements Document (PRD)
 
 ### Product Overview
-Athena is a university-focused grant tracking and management platform designed to streamline the grant lifecycle for lecturers and administrators. The system prioritizes accessibility for older users while maintaining a modern, professional interface.
+Granto is a university-focused grant tracking and management platform designed to streamline the grant lifecycle for lecturers and administrators. The system prioritizes accessibility for older users while maintaining a modern, professional interface.
 
 ### Target Users
 - **Primary**: University lecturers (ages 35-65+)

@@ -4,15 +4,17 @@ import { queryClient } from "../lib/react-query"
 
 export const useCreateMilestone = () => {
     return useMutation({
-        mutationFn: ({ grant, title, dueDate, status, priority }: {
+        mutationFn: ({ grant, title, dueDate, status, priority, userId }: {
             grant: string,
             title: string,
             dueDate: string,
             status: "Completed" | "Progress",
-            priority: "High" | "Medium" | "Low"
-        }) => createMilestone(grant, title, dueDate, status, priority),
+            priority: "High" | "Medium" | "Low",
+            userId: string
+        }) => createMilestone(grant, title, dueDate, status, priority, userId),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['milestones', variables.grant] })
+            queryClient.invalidateQueries({ queryKey: ['activities', variables.grant] })
         }
     })
 }

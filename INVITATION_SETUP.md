@@ -1,7 +1,7 @@
 # Grant Invitation System Setup Guide
 
 ## Overview
-This system allows you to invite users to grants even if they don't have an Athena account yet. When you add a user by email:
+This system allows you to invite users to grants even if they don't have an Granto account yet. When you add a user by email:
 - **If they exist**: They're added directly to the grant
 - **If they don't exist**: An invitation link is created and copied to your clipboard
 

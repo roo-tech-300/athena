@@ -1,15 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { createDeliverables, getDeliverables, createDeliverableTasks, getDeliverableTasks, updateDeliverableTask, updateDeliverable } from "../lib/apis/deliverable"
+import { createDeliverables, createDeliverableTasks, getDeliverables, getDeliverableTasks, updateDeliverable, updateDeliverableTask } from "../lib/apis/deliverable"
 import { queryClient } from "../lib/react-query"
 
 export const useCreateDeliverable = () => {
     return useMutation({
-        mutationFn: ({ grant, title, dueDate, status }: {
+        mutationFn: ({ grant, title, dueDate, userId, status }: {
             grant: string,
             title: string,
             dueDate: string,
+            userId: string,
             status?: "Completed" | "Progress"
-        }) => createDeliverables(grant, title, dueDate, status),
+        }) => createDeliverables(grant, title, dueDate, userId, status),
         onMutate: async (variables) => {
             // Cancel outgoing refetches
             await queryClient.cancelQueries({ queryKey: ['deliverables', variables.grant] })
@@ -39,6 +40,7 @@ export const useCreateDeliverable = () => {
         },
         onSettled: (_, __, variables) => {
             queryClient.invalidateQueries({ queryKey: ['deliverables', variables.grant] })
+            queryClient.invalidateQueries({ queryKey: ['activities', variables.grant] })
         }
     })
 }
@@ -54,7 +56,7 @@ export const useGetDeliverables = (grantId: string) => {
 
 export const useCreateDeliverableTask = () => {
     return useMutation({
-        mutationFn: ({ deliverable, title, dueDate, status, assignedMembers, description, action, actionItem }: {
+        mutationFn: ({ deliverable, title, dueDate, status, assignedMembers, description, action, actionItem, grantId, deliverableTitle, involvedUserIds }: {
             deliverable: string,
             title: string,
             dueDate: string,
@@ -63,8 +65,10 @@ export const useCreateDeliverableTask = () => {
             description?: string,
             action?: "Transaction" | "Other",
             actionItem?: string,
-            grantId: string
-        }) => createDeliverableTasks(deliverable, title, dueDate, status, assignedMembers, description, action, actionItem),
+            grantId: string,
+            deliverableTitle: string,
+            involvedUserIds: string[]
+        }) => createDeliverableTasks(deliverable, title, dueDate, status, assignedMembers, grantId, deliverableTitle, involvedUserIds, description, action, actionItem),
         onMutate: async (variables) => {
             await queryClient.cancelQueries({ queryKey: ['deliverables', variables.grantId] })
 
@@ -104,6 +108,7 @@ export const useCreateDeliverableTask = () => {
         },
         onSettled: (_, __, variables) => {
             queryClient.invalidateQueries({ queryKey: ['deliverables', variables.grantId] })
+            queryClient.invalidateQueries({ queryKey: ['activities', variables.grantId] })
         }
     })
 }

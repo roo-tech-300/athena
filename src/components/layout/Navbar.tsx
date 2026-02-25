@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
+import Logo from '../ui/Logo'
 import { useAuth } from '../../useContext/context'
 import { useLogoutAccount } from '../../hooks/useAuth'
 import { getUserInitials } from '../../utils/user'
@@ -37,27 +38,8 @@ export default function Navbar() {
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
-                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{
-                        width: '32px',
-                        height: '32px',
-                        backgroundColor: 'var(--color-primary)',
-                        borderRadius: 'var(--radius-lg)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontWeight: 'bold'
-                    }}>
-                        A
-                    </div>
-                    <span style={{
-                        fontSize: 'var(--text-xl)',
-                        fontWeight: 'var(--font-semibold)',
-                        color: 'var(--color-gray-900)'
-                    }}>
-                        Athena
-                    </span>
+                <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                    <Logo showText={true} />
                 </Link>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-8)' }}>

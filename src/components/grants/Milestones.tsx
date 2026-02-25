@@ -4,6 +4,7 @@ import Button from '../ui/Button'
 import Loader from '../ui/Loader'
 import { useToast } from '../ui/Toast'
 import { useCreateMilestone, useGetMilestones } from '../../hooks/useMilestones'
+import { useAuth } from '../../useContext/context'
 
 
 
@@ -76,6 +77,7 @@ const formatDate = (dateString: string) => {
 
 export default function Milestones({ grant, myMembership }: { grant?: any, myMembership?: any }) {
     const isPI = myMembership?.role?.includes('Principal Investigator')
+    const { user } = useAuth()
     const { addToast } = useToast()
     const { data: milestones = [], isLoading: milestonesLoading } = useGetMilestones(grant?.$id || '')
     const { mutateAsync: createMilestoneMutation, isPending: isCreatingMilestone } = useCreateMilestone()
@@ -95,7 +97,8 @@ export default function Milestones({ grant, myMembership }: { grant?: any, myMem
         try {
             await createMilestoneMutation({
                 grant: grant.$id,
-                ...formData
+                ...formData,
+                userId: user?.id || ''
             })
 
             addToast("Milestone created successfully", "success")

@@ -1,11 +1,11 @@
-# Athena Folder Structure
+# Granto Folder Structure
 
-This document explains the complete folder structure for the Athena project.
+This document explains the complete folder structure for the Granto project.
 
 ## Root Directory
 
 ```
-athena/
+Granto/
 ├── public/                  # Static assets
 ├── src/                     # Source code
 ├── .env                     # Environment variables (DO NOT COMMIT)

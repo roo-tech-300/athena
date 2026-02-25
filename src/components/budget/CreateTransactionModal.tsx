@@ -4,6 +4,7 @@ import Button from '../ui/Button'
 import Loader from '../ui/Loader'
 import { useToast } from '../ui/Toast'
 import { useCreateTransaction, useUpdateBudgetItem } from '../../hooks/useBudget'
+import { useAuth } from '../../useContext/context'
 
 interface CreateTransactionModalProps {
     isOpen: boolean
@@ -25,6 +26,7 @@ export default function CreateTransactionModal({
     preselectedItem
 }: CreateTransactionModalProps) {
     const { addToast } = useToast()
+    const { user } = useAuth()
     const { mutateAsync: createTransactionMutation, isPending: isCreatingTransaction } = useCreateTransaction()
     const { mutateAsync: updateBudgetItemMutation } = useUpdateBudgetItem()
 
@@ -77,6 +79,7 @@ export default function CreateTransactionModal({
                 amount,
                 description: transactionData.description,
                 grantId: grant.$id,
+                userId: user?.id || '',
                 file: transactionData.file || undefined
             })
 

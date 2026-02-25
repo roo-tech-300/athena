@@ -1,4 +1,5 @@
 import { database, ID, Query } from "../appwrite"
+import { createActivity } from "./grants"
 
 export const createMilestone = async (
     grant: string,
@@ -6,6 +7,7 @@ export const createMilestone = async (
     dueDate: string,
     status: "Completed" | "Progress",
     priority: "High" | "Medium" | "Low",
+    userId: string,
 ) => {
     const res = await database.createRow(
         import.meta.env.VITE_APPWRITE_DATABASE_ID,
@@ -19,6 +21,7 @@ export const createMilestone = async (
             priority,
         }
     )
+    createActivity(grant, `Milestone created: ${title}`, "Milestone", res.$id, [userId])
     return res
 }
 

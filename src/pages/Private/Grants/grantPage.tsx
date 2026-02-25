@@ -28,10 +28,12 @@ import { SidebarItem } from '../../../components/grants/grantLayout/SideBarItem'
 import { useAuth } from '../../../useContext/context'
 import { useLogoutAccount } from '../../../hooks/useAuth'
 import Loader from '../../../components/ui/Loader'
-import { useGrant, useGrantMembers } from '../../../hooks/useGrants'
+import { useGrant, useGrantMembers, useActivities } from '../../../hooks/useGrants'
 import { useDepartment } from '../../../hooks/useDepartments'
 import { getUserInitials } from '../../../utils/user'
 import { isPremiumFeature, isPremiumFeatureAllowed } from '../../../utils/subscription'
+import NotificationDropdown from '../../../components/grants/NotificationDropdown'
+import Logo from '../../../components/ui/Logo'
 
 
 
@@ -41,11 +43,13 @@ export default function GrantPage() {
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState('Dashboard')
     const [isSidebarVisible, setIsSidebarVisible] = useState(true)
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false)
     // const [grant, setGrant] = useState<any>(null)
 
     const { data: grant, isLoading: grantLoading } = useGrant(id!)
     const { data: members, isLoading: membersLoading } = useGrantMembers(id!)
     const { data: department, isLoading: departmentLoading } = useDepartment(grant?.department || '')
+    const { data: activities = [] } = useActivities(id!)
     const { user, logout } = useAuth()
 
     const sidebarItems = [
@@ -86,6 +90,7 @@ export default function GrantPage() {
     const isReviewer = roles.includes('Reviewer');
     const isFO = roles.includes('Finance Officer');
     const isResearcher = roles.includes('Researcher');
+    const canViewBudgetActivities = isPI || isReviewer || isFO;
 
     const filteredSidebarItems = sidebarItems.filter(item => {
         if (isPI || isReviewer) return true;
@@ -124,21 +129,10 @@ export default function GrantPage() {
                     alignItems: 'center',
                     gap: 'var(--space-3)',
                     marginBottom: 'var(--space-12)',
-                    justifyContent: isSidebarVisible ? 'flex-start' : 'center'
+                    justifyContent: isSidebarVisible ? 'flex-start' : 'center',
+                    paddingLeft: isSidebarVisible ? 'var(--space-2)' : '0'
                 }}>
-                    <div style={{
-                        width: '32px',
-                        height: '32px',
-                        background: 'var(--color-primary)',
-                        borderRadius: 'var(--radius-md)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontWeight: 700,
-                        minWidth: '32px'
-                    }}>A</div>
-                    {isSidebarVisible && <span style={{ fontWeight: 700, fontSize: 'var(--text-lg)', whiteSpace: 'nowrap' }}>Athena</span>}
+                    <Logo size={32} showText={isSidebarVisible} />
                 </div>
 
                 <nav style={{ flex: 1 }}>
@@ -146,7 +140,7 @@ export default function GrantPage() {
                         const isPremium = isPremiumFeature(item.label)
                         const hasAccess = isPremiumFeatureAllowed(department)
                         const showLock = isPremium && !hasAccess
-                        
+
                         return (
                             <div key={item.label} style={{ position: 'relative' }}>
                                 <SidebarItem
@@ -249,9 +243,84 @@ export default function GrantPage() {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-                        <button className="btn-ghost" style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer' }}>
-                            <Bell size={20} />
-                        </button>
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                className="btn-ghost"
+                                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                                style={{
+                                    padding: 'var(--space-2)',
+                                    borderRadius: 'var(--radius-md)',
+                                    background: isNotificationOpen ? 'var(--color-gray-100)' : 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    position: 'relative',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-gray-100)'}
+                                onMouseLeave={(e) => {
+                                    if (!isNotificationOpen) e.currentTarget.style.background = 'none'
+                                }}
+                            >
+                                <Bell size={20} style={{ color: isNotificationOpen ? 'var(--color-primary)' : 'var(--color-gray-600)' }} />
+                                {activities.filter((act: any) => {
+                                    if (act.entityType === 'Personnel') return isPI
+                                    if (act.entityType === 'Task') return act.involvedUsers?.includes(user?.id)
+                                    if (canViewBudgetActivities) return true
+                                    if (act.involvedUsers?.includes(user?.id)) return true
+                                    if (act.entityType === 'Budget' || act.entityType === 'Transaction') return false
+                                    return true
+                                }).length > 0 && (
+                                        <>
+                                            {/* Outer glow/pulse for the dot */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '6px',
+                                                right: '6px',
+                                                width: '8px',
+                                                height: '8px',
+                                                borderRadius: '50%',
+                                                background: 'var(--color-primary)',
+                                                opacity: 0.4,
+                                                animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite'
+                                            }} />
+                                            {/* Inner solid dot */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '6px',
+                                                right: '6px',
+                                                width: '8px',
+                                                height: '8px',
+                                                borderRadius: '50%',
+                                                background: 'var(--color-primary)',
+                                                border: '2px solid white',
+                                                boxShadow: '0 0 0 1px rgba(0,0,0,0.05)'
+                                            }} />
+                                        </>
+                                    )}
+                            </button>
+                            {isNotificationOpen && (
+                                <NotificationDropdown
+                                    activities={activities}
+                                    onClose={() => setIsNotificationOpen(false)}
+                                    onActivityClick={(activity) => {
+                                        if (activity.entityType === 'Deliverable' || activity.entityType === 'Task') {
+                                            setActiveTab('Deliverables')
+                                        } else if (activity.entityType === 'Budget' || activity.entityType === 'Transaction') {
+                                            setActiveTab('Budget tracker')
+                                        } else if (activity.entityType === 'Personnel') {
+                                            setActiveTab('Personnel')
+                                        }
+                                        setIsNotificationOpen(false)
+                                    }}
+                                    canViewBudgetActivities={canViewBudgetActivities}
+                                    isPI={isPI}
+                                    userId={user?.id || ''}
+                                />
+                            )}
+                        </div>
                         <button
                             className="btn-ghost"
                             style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer' }}

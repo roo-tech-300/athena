@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import Logo from '../../components/ui/Logo';
 import { Compass, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
@@ -93,8 +94,7 @@ export default function NotFound() {
                         justifyContent: 'center',
                         gap: '8px'
                     }}>
-                        <div style={{ width: '24px', height: '24px', background: 'var(--color-primary)', borderRadius: 'var(--radius-sm)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px' }}>A</div>
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-gray-400)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Athena Intelligence</span>
+                        <Logo size={24} showText={true} textColor="var(--color-gray-400)" />
                     </div>
                 </div>
             </div>

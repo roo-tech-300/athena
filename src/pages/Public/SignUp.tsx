@@ -1,5 +1,6 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../../components/ui/Button'
+import Logo from '../../components/ui/Logo'
 import { Mail, Lock, User, ArrowRight, Gift } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCreateAccount } from '../../hooks/useAuth'
@@ -10,7 +11,7 @@ export default function SignUp() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const invitationToken = searchParams.get('invite');
-    
+
     const [title, setTitle] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -51,7 +52,7 @@ export default function SignUp() {
         <div className="auth-page">
             {/* Split Screen Layout */}
             <div className="auth-sidebar">
-                <img src="/auth-bg.png" alt="Athena Intelligence" className="auth-sidebar-img" style={{ transform: 'scaleX(-1)' }} />
+                <img src="/auth-bg.png" alt="Granto Intelligence" className="auth-sidebar-img" style={{ transform: 'scaleX(-1)' }} />
                 <div className="auth-sidebar-overlay">
                     <div style={{ maxWidth: '400px' }}>
                         <div style={{
@@ -60,19 +61,7 @@ export default function SignUp() {
                             gap: '12px',
                             marginBottom: 'var(--space-8)'
                         }}>
-                            <div style={{
-                                width: '40px',
-                                height: '40px',
-                                background: 'white',
-                                borderRadius: 'var(--radius-md)',
-                                color: 'var(--color-primary)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontWeight: 'bold',
-                                fontSize: '20px'
-                            }}>A</div>
-                            <span style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, letterSpacing: '-0.02em' }}>Athena</span>
+                            <Logo size={40} showText={true} textColor="white" />
                         </div>
                         <h2 style={{ fontSize: 'var(--text-3xl)', marginBottom: 'var(--space-4)', fontWeight: 700, lineHeight: 1.2 }}>
                             Empowering Researcher Independence.
@@ -204,7 +193,7 @@ export default function SignUp() {
 
                         <div style={{ textAlign: 'center', marginTop: 'var(--space-8)', fontSize: 'var(--text-sm)', color: 'var(--color-gray-500)' }}>
                             Already managing research? <br />
-                            <Link to="/login" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>Sign in to Athena</Link>
+                            <Link to="/login" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>Sign in to Granto</Link>
                         </div>
                     </div>
                 </div>

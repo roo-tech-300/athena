@@ -296,14 +296,14 @@ export default function ImportBudgetModal({ isOpen, onClose, grantId }: ImportBu
                                         To ensure your budget items are processed correctly by our system, please follow our standardized template. Using other formats may cause detection errors or sync failures.
                                     </p>
                                     <a
-                                        href="/athena_template.xlsx"
-                                        download="Athena_Tetfund_Budget_Template.xlsx"
+                                        href="/granto_template.xlsx"
+                                        download="Granto_Tetfund_Budget_Template.xlsx"
                                         style={{
                                             display: 'inline-flex',
                                             alignItems: 'center',
                                             gap: '8px',
                                             fontSize: '13px',
-                                            fontWeight: 600,    
+                                            fontWeight: 600,
                                             color: 'var(--color-accent-indigo)',
                                             textDecoration: 'none',
                                             background: 'white',

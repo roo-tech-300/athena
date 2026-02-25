@@ -1,4 +1,4 @@
-# Athena Engineering Principles
+# Granto Engineering Principles
 
 ## Architecture Philosophy
 

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/layout/Navbar'
 import Button from '../../components/ui/Button'
+import Logo from '../../components/ui/Logo'
 import { Landmark, Briefcase } from 'lucide-react'
 
 export default function LandingPage() {
@@ -41,7 +42,7 @@ export default function LandingPage() {
                             fontWeight: 'var(--font-medium)',
                             lineHeight: 1.6
                         }}>
-                            Athena streamlines the grant lifecycle for university lecturers and administrators. From proposal tracking to funding analytics, manage your research portfolio with futuristic precision.
+                            Granto streamlines the grant lifecycle for university lecturers and administrators. From proposal tracking to funding analytics, manage your research portfolio with futuristic precision.
                         </p>
                         <div style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center' }}>
                             <Link to="/signup">
@@ -207,7 +208,7 @@ export default function LandingPage() {
                                 Bring your research group into the future of management. Designed for technical and non-technical staff alike.
                             </p>
                             <Link to="/signup">
-                                <Button size="lg" style={{ background: 'white', color: 'var(--color-gray-900)', fontWeight: 'bold', paddingInline: 'var(--space-16)' }}>Deploy Athena for Your Institution</Button>
+                                <Button size="lg" style={{ background: 'white', color: 'var(--color-gray-900)', fontWeight: 'bold', paddingInline: 'var(--space-16)' }}>Deploy Granto for Your Institution</Button>
                             </Link>
                         </div>
                     </div>
@@ -217,11 +218,7 @@ export default function LandingPage() {
             <footer style={{ padding: 'var(--space-8) 0', borderTop: '1px solid var(--color-gray-100)', background: 'var(--color-white)' }}>
                 <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-md)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 'bold' }}>A</div>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: 700, lineHeight: 1 }}>Athena</span>
-                            <span style={{ fontSize: '10px', color: 'var(--color-gray-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Grant Tracking</span>
-                        </div>
+                        <Logo size={32} showText={true} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                         <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>

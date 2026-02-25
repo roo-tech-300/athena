@@ -1,4 +1,5 @@
 import { database, ID, Query } from "../appwrite"
+import { createActivity } from "./grants"
 
 export const createDocument = async (
     doc: string, // ID from google doc api
@@ -7,7 +8,8 @@ export const createDocument = async (
     action: "Deliverable" | "Milestone",
     actionItem: string,
     creator: string,
-    type: string
+    type: string,
+    creatorName: string
 ) => {
     try {
         const res = await database.createRow(
@@ -25,6 +27,7 @@ export const createDocument = async (
                 type
             }
         )
+        createActivity(grant, `A new document has been uploaded by ${creatorName}`, "Document", res.$id, [creator])
         return res
     } catch (error) {
         console.error(error)

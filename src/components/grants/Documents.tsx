@@ -130,7 +130,8 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                     action: formData.action,
                     actionItem: formData.actionItem,
                     creator: user?.$id || '',
-                    type: formData.type
+                    type: formData.type,
+                    creatorName: user?.name || 'Unknown'
                 })
 
                 addToast("Document created and connected successfully!", "success")

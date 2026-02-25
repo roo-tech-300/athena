@@ -133,7 +133,7 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
         try {
             // First, check if user exists WITHOUT creating anything in DB
             const userCheck = await checkUser(newMemberEmail);
-            
+
             if (!userCheck.exists) {
                 // User doesn't exist - show confirmation modal BEFORE creating invitation
                 setPendingInvitationEmail(newMemberEmail);
@@ -168,10 +168,10 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                 email: pendingInvitationEmail,
                 role: newMemberRoles
             });
-            
+
             // Use the invitation token
             const invitationUrl = `${window.location.origin}/signup?invite=${result.token}&email=${encodeURIComponent(pendingInvitationEmail)}`;
-            
+
             // Copy invitation link to clipboard
             try {
                 await navigator.clipboard.writeText(invitationUrl);
@@ -192,7 +192,7 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                     { autoClose: 10000 }
                 );
             }
-            
+
             // Reset and close
             setIsInviteConfirmModalOpen(false);
             setPendingInvitationEmail('');
@@ -548,8 +548,8 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                 }}
                 title="User Not Found"
                 footer={<>
-                    <Button 
-                        variant="ghost" 
+                    <Button
+                        variant="ghost"
                         onClick={() => {
                             setIsInviteConfirmModalOpen(false);
                             setPendingInvitationEmail('');
@@ -578,7 +578,7 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                         <Mail size={24} style={{ color: 'var(--color-warning)' }} />
                         <div>
                             <p style={{ fontSize: 'var(--text-sm)', fontWeight: 600, margin: 0 }}>
-                                <strong>{pendingInvitationEmail}</strong> doesn't have an Athena account yet.
+                                <strong>{pendingInvitationEmail}</strong> doesn't have a Granto account yet.
                             </p>
                         </div>
                     </div>

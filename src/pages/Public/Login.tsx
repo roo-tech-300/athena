@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Button from '../../components/ui/Button'
+import Logo from '../../components/ui/Logo'
 import { Mail, Lock, ArrowRight } from 'lucide-react'
 import { useLoginAccount } from '../../hooks/useAuth'
 import { useState } from 'react'
@@ -28,7 +29,7 @@ export default function Login() {
         <div className="auth-page">
             {/* Split Screen Layout */}
             <div className="auth-sidebar">
-                <img src="/auth-bg.png" alt="Athena Intelligence" className="auth-sidebar-img" />
+                <img src="/auth-bg.png" alt="Granto Intelligence" className="auth-sidebar-img" />
                 <div className="auth-sidebar-overlay">
                     <div style={{ maxWidth: '400px' }}>
                         <div style={{
@@ -37,19 +38,7 @@ export default function Login() {
                             gap: '12px',
                             marginBottom: 'var(--space-8)'
                         }}>
-                            <div style={{
-                                width: '40px',
-                                height: '40px',
-                                background: 'white',
-                                borderRadius: 'var(--radius-md)',
-                                color: 'var(--color-primary)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontWeight: 'bold',
-                                fontSize: '20px'
-                            }}>A</div>
-                            <span style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, letterSpacing: '-0.02em' }}>Athena</span>
+                            <Logo size={40} showText={true} textColor="white" />
                         </div>
                         <h2 style={{ fontSize: 'var(--text-3xl)', marginBottom: 'var(--space-4)', fontWeight: 700, lineHeight: 1.2 }}>
                             Strategic Wisdom for Academic Excellence.

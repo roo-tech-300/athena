@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createDepartment, getUserDepartments, getDepartment, updateDepartment } from "../lib/apis/department"
+import type { DepartmentSubscription } from "../utils/subscription";
 import { queryClient } from "../lib/react-query";
 
 export const useUserDepartments = (userId: string) => {
@@ -11,9 +12,9 @@ export const useUserDepartments = (userId: string) => {
 }
 
 export const useDepartment = (deptId: string) => {
-    return useQuery({
+    return useQuery<DepartmentSubscription & { $id: string }>({
         queryKey: ["department", deptId],
-        queryFn: () => getDepartment(deptId),
+        queryFn: () => getDepartment(deptId) as any,
         enabled: !!deptId,
     })
 }

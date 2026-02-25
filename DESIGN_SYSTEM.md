@@ -1,8 +1,8 @@
-# Athena Design System
+# Granto Design System
 
 ## Design Philosophy
 
-Athena's design should feel:
+Granto's design should feel:
 - **Futuristic but calm**
 - **Liquid-glass inspired**, but NOT overly glossy or Apple-heavy
 - **Accessible and friendly to older users**
@@ -582,7 +582,7 @@ This subtly reinforces teamwork and accountability.
 
 👉 Result: The system feels alive, not bureaucratic.
 
-8. Brand Alignment with “Athena”
+8. Brand Alignment with “Granto”
 
 The UI reflects the brand identity perfectly:
 

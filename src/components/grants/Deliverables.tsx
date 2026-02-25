@@ -21,6 +21,7 @@ import { useCreateDeliverable, useGetDeliverables, useCreateDeliverableTask, use
 import { useGrantMembers } from '../../hooks/useGrants'
 import { useGetBudgetItems, useGetTransactions } from '../../hooks/useBudget'
 import { createActivity } from '../../lib/apis/grants'
+import { useAuth } from '../../useContext/context'
 import CreateTransactionModal from '../budget/CreateTransactionModal'
 import { useQueryClient } from '@tanstack/react-query'
 import Modal from '../ui/Modal'
@@ -108,6 +109,7 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
     const myMemberId = myMembership?.$id;
 
 
+    const { user } = useAuth()
     const { addToast } = useToast()
     const { data: deliverables = [], isLoading: deliverablesLoading } = useGetDeliverables(grant?.$id || '')
     const { data: grantMembers = [] as GrantMember[] } = useGrantMembers(grant?.$id || '')
@@ -148,7 +150,8 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
         try {
             await createDeliverableMutation({
                 grant: grant.$id,
-                ...deliverableForm
+                ...deliverableForm,
+                userId: user?.id || ''
             })
             // Optimistic update handles UI feedback
             setIsAddModalOpen(false)
@@ -181,6 +184,14 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
 
         setIsSubmitting(true)
         try {
+            // Resolve member IDs to user IDs for activity notifications
+            const involvedUserIds = taskForm.assignedMembers
+                .map((memberId: string) => {
+                    const member = grantMembers.find((m: any) => m.$id === memberId)
+                    return member?.user?.$id || member?.user
+                })
+                .filter(Boolean) as string[]
+
             await createDeliverableTaskMutation({
                 deliverable: selectedDeliverable.$id,
                 title: taskForm.title,
@@ -189,7 +200,9 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                 assignedMembers: taskForm.assignedMembers,
                 description: taskForm.description,
                 action: taskForm.action,
-                grantId: grant.$id
+                grantId: grant.$id,
+                deliverableTitle: selectedDeliverable.title,
+                involvedUserIds
             })
             // Optimistic update handles UI feedback
             setIsTaskModalOpen(false)
