@@ -1,4 +1,5 @@
 import React from 'react'
+import logoImg from '../../assets/images/logo.png'
 
 interface LogoProps {
     size?: number;
@@ -25,21 +26,16 @@ export default function Logo({
                 ...style
             }}
         >
-            <div style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                backgroundColor: 'var(--color-primary)',
-                borderRadius: 'calc(var(--radius-lg) * ' + (size / 32) + ')',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: `${size * 0.6}px`,
-                flexShrink: 0
-            }}>
-                G
-            </div>
+            <img
+                src={logoImg}
+                alt="Granto Logo"
+                style={{
+                    width: `${size}px`,
+                    height: 'auto',
+                    flexShrink: 0,
+                    display: 'block'
+                }}
+            />
             {showText && (
                 <span style={{
                     fontSize: `calc(var(--text-xl) * ${size / 32})`,
