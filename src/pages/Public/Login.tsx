@@ -123,7 +123,7 @@ export default function Login() {
                     </div>
 
                     <p style={{ textAlign: 'center', marginTop: 'var(--space-8)', fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', lineHeight: 1.5 }}>
-                        By signing in, you agree to our <a href="#" style={{ color: 'inherit', textDecoration: 'underline' }}>Security Governance</a> <br /> and Academic Data Privacy Policy.
+                        By signing in, you agree to our <Link to="/terms-of-service" style={{ color: 'inherit', textDecoration: 'underline' }}>Terms of Service</Link> <br /> and <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'underline' }}>Academic Data Privacy Policy</Link>.
                     </p>
                 </div>
             </div>

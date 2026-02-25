@@ -220,11 +220,17 @@ export default function LandingPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <Logo size={32} showText={true} />
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                        <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)', margin: 0 }}>
                             &copy; 2026 Kangaroo Systems Ltd. All rights reserved.
                         </p>
-                        <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>Kangaroo Technologies</span>
+                        <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
+                            <Link to="/terms-of-service" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Terms of Service</Link>
+                            <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
+                            <Link to="/privacy-policy" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Privacy Policy</Link>
+                            <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
+                            <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>Kangaroo Technologies</span>
+                        </div>
                     </div>
                 </div>
             </footer>

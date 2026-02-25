@@ -5,6 +5,8 @@ import SignUp from './pages/Public/SignUp'
 import Portal from './pages/Private/Portal'
 import GrantPage from './pages/Private/Grants/grantPage'
 import DeptPage from './pages/Private/Departments/DeptPage'
+import PrivacyPolicy from './pages/Public/PrivacyPolicy'
+import TermsOfService from './pages/Public/TermsOfService'
 
 import { ToastProvider } from './components/ui/Toast'
 import { AuthProvider } from './useContext/context'
@@ -20,6 +22,8 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
 
             <Route element={<PublicRoute />}>
               <Route path="/login" element={<Login />} />

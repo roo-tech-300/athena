@@ -196,6 +196,10 @@ export default function SignUp() {
                             <Link to="/login" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>Sign in to Granto</Link>
                         </div>
                     </div>
+
+                    <p style={{ textAlign: 'center', marginTop: 'var(--space-8)', fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', lineHeight: 1.5 }}>
+                        By creating an account, you agree to our <Link to="/terms-of-service" style={{ color: 'inherit', textDecoration: 'underline' }}>Terms of Service</Link> <br /> and <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'underline' }}>Academic Data Privacy Policy</Link>.
+                    </p>
                 </div>
             </div>
         </div>
