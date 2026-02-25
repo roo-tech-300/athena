@@ -149,7 +149,7 @@ export default function LandingPage() {
 
                             {/* 3. Tertiary: Organisation Management (PRD Section 2) */}
                             <div className="card-neumorphic" style={{ gridColumn: 'span 5' }}>
-                                <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-4)' }}>Organisations</h3>
+                                <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-4)' }}>Research Group</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                                     <div style={{ padding: 'var(--space-3)', background: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
