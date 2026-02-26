@@ -39,10 +39,10 @@ export default function Navbar() {
                 alignItems: 'center'
             }}>
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                    <Logo showText={true} />
+                    <Logo showText={true} className="navbar-logo" />
                 </Link>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-8)' }}>
+                <div className="navbar-links">
                     {user ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
@@ -60,19 +60,19 @@ export default function Navbar() {
                                 }}>
                                     {getUserInitials(user)}
                                 </div>
-                                <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)' }}>
+                                <span className="hide-mobile" style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-gray-700)' }}>
                                     {user.name}
                                 </span>
                             </div>
-                            <Button variant="ghost" onClick={handleLogout}>Log Out</Button>
+                            <Button variant="ghost" onClick={handleLogout} size="sm">Log Out</Button>
                         </div>
                     ) : location.pathname !== '/portal' && (
-                        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+                        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
                             <Link to="/login">
-                                <Button variant="ghost">Log In</Button>
+                                <Button variant="ghost" size="sm" className="hide-mobile">Log In</Button>
                             </Link>
                             <Link to="/signup">
-                                <Button>Get Started</Button>
+                                <Button size="sm">Get Started</Button>
                             </Link>
                         </div>
                     )}

@@ -44,12 +44,12 @@ export default function LandingPage() {
                         }}>
                             Granto streamlines the grant lifecycle for university lecturers and administrators. From proposal tracking to funding analytics, manage your research portfolio with futuristic precision.
                         </p>
-                        <div style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center' }}>
+                        <div className="cta-buttons" style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
                             <Link to="/signup">
-                                <Button size="lg" style={{ paddingInline: 'var(--space-12)' }}>Begin Grant Tracking</Button>
+                                <Button size="lg" className="btn-responsive" style={{ paddingInline: 'var(--space-12)' }}>Begin Grant Tracking</Button>
                             </Link>
                             <Link to="/login">
-                                <Button size="lg" variant="outline" style={{ paddingInline: 'var(--space-12)' }}>Platform Overview</Button>
+                                <Button size="lg" variant="outline" className="btn-responsive" style={{ paddingInline: 'var(--space-12)' }}>Platform Overview</Button>
                             </Link>
                         </div>
                     </div>
@@ -70,10 +70,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* Dashboard Simulation Container - Visual Hierarchy in Action */}
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(12, 1fr)',
-                            gap: 'var(--space-6)',
+                        <div className="landing-grid-12" style={{
                             maxWidth: '1200px',
                             margin: '0 auto',
                             background: 'rgba(255, 255, 255, 0.4)',
@@ -84,12 +81,12 @@ export default function LandingPage() {
                         }}>
 
                             {/* 1. Primary Focus: Grant Overview (Top Left) */}
-                            <div className="card-neumorphic" style={{ gridColumn: 'span 8', gridRow: 'span 1' }}>
+                            <div className="card-neumorphic tablet-span-2" style={{ gridColumn: 'span 8', gridRow: 'span 1' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
                                     <h3 style={{ fontSize: 'var(--text-xl)' }}>Portfolio Status</h3>
                                     <span style={{ padding: '4px 12px', background: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: 'var(--radius-full)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>Lecturer View</span>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+                                <div className="metric-grid">
                                     {[
                                         { label: 'Submitted', value: '13', color: '#3B82F6', prog: '75%' },
                                         { label: 'Review', value: '6', color: '#F59E0B', prog: '45%' },
@@ -107,7 +104,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* 3. Tertiary: Collaboration Tools (Top Right) */}
-                            <div className="card-neumorphic glass" style={{ gridColumn: 'span 4' }}>
+                            <div className="card-neumorphic glass tablet-span-1" style={{ gridColumn: 'span 4' }}>
                                 <h3 style={{ fontSize: 'var(--text-sm)', marginBottom: 'var(--space-4)', fontWeight: 700 }}>Activity Log</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                                     {[
@@ -128,8 +125,8 @@ export default function LandingPage() {
                             </div>
 
                             {/* 2. Secondary Focus: Reporting & Funding Trends (PRD Section 4) */}
-                            <div className="card-neumorphic" style={{ gridColumn: 'span 7' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
+                            <div className="card-neumorphic tablet-span-2" style={{ gridColumn: 'span 7' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
                                     <h3 style={{ fontSize: 'var(--text-lg)' }}>Funding Distribution</h3>
                                     <select style={{ border: 'none', background: 'var(--color-gray-50)', borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-xs)', padding: '2px 8px' }}>
                                         <option>Academic Year 2026</option>
@@ -139,7 +136,7 @@ export default function LandingPage() {
                                     {/* Simulated Bar Chart for Departments */}
                                     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', height: '100%', padding: '20px 10px' }}>
                                         {[60, 85, 45, 75, 95].map((h, i) => (
-                                            <div key={i} style={{ width: '25px', height: `${h}%`, background: i === 1 ? 'var(--color-primary)' : 'var(--color-primary-light)', borderRadius: '4px 4px 0 0', position: 'relative' }}>
+                                            <div key={i} style={{ width: 'clamp(10px, 4vw, 25px)', height: `${h}%`, background: i === 1 ? 'var(--color-primary)' : 'var(--color-primary-light)', borderRadius: '4px 4px 0 0', position: 'relative' }}>
                                                 <span style={{ position: 'absolute', top: '-15px', left: '0', fontSize: '8px', width: '100%', textAlign: 'center' }}>{['CS', 'BIO', 'ENG', 'ART', 'MED'][i]}</span>
                                             </div>
                                         ))}
@@ -148,7 +145,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* 3. Tertiary: Organisation Management (PRD Section 2) */}
-                            <div className="card-neumorphic" style={{ gridColumn: 'span 5' }}>
+                            <div className="card-neumorphic tablet-span-1" style={{ gridColumn: 'span 5' }}>
                                 <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-4)' }}>Research Group</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                                     <div style={{ padding: 'var(--space-3)', background: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -175,7 +172,7 @@ export default function LandingPage() {
                 {/* Core Features Section - Based on PRD Phasing */}
                 <section className="section-padding">
                     <div className="container" id="features">
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-12)' }}>
+                        <div className="features-grid">
                             <div>
                                 <h4 style={{ color: 'var(--color-primary)', marginBottom: 'var(--space-2)', fontWeight: 700 }}>01. Structured Grant Tracking</h4>
                                 <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-base)', lineHeight: 1.5 }}>Full lifecycle management from Draft to Completed. Support for funding bodies, document attachments, and strict deadline monitoring.</p>
@@ -192,23 +189,22 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                {/* Institutional CTA - Reference Kangaroo Systems branding */}
                 <section className="section-padding" style={{ paddingBottom: 'var(--space-16)' }}>
                     <div className="container">
                         <div className="glass-dark" style={{
-                            padding: 'var(--space-12) var(--space-8)',
+                            padding: 'clamp(var(--space-8), 10vw, var(--space-16)) var(--space-6)',
                             borderRadius: 'var(--radius-xl)',
                             textAlign: 'center',
                             background: 'var(--color-gray-900)',
                             color: 'white',
                             boxShadow: '0 50px 100px rgba(0, 0, 0, 0.2)'
                         }}>
-                            <h2 style={{ fontSize: 'var(--text-3xl)', marginBottom: 'var(--space-6)', color: 'white' }}>Streamline University Research</h2>
+                            <h2 style={{ fontSize: 'clamp(var(--text-2xl), 5vw, var(--text-4xl))', marginBottom: 'var(--space-6)', color: 'white' }}>Streamline University Research</h2>
                             <p style={{ color: 'var(--color-gray-400)', marginBottom: 'var(--space-8)', maxWidth: '650px', marginInline: 'auto', fontSize: 'var(--text-lg)' }}>
                                 Bring your research group into the future of management. Designed for technical and non-technical staff alike.
                             </p>
                             <Link to="/signup">
-                                <Button size="lg" style={{ background: 'white', color: 'var(--color-gray-900)', fontWeight: 'bold', paddingInline: 'var(--space-16)' }}>Deploy Granto for Your Institution</Button>
+                                <Button size="lg" className="btn-responsive" style={{ background: 'white', color: 'var(--color-gray-900)', fontWeight: 'bold', paddingInline: 'var(--space-16)' }}>Deploy Granto for Your Institution</Button>
                             </Link>
                         </div>
                     </div>
@@ -216,15 +212,15 @@ export default function LandingPage() {
             </div>
 
             <footer style={{ padding: 'var(--space-8) 0', borderTop: '1px solid var(--color-gray-100)', background: 'var(--color-white)' }}>
-                <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="container footer-container">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <Logo size={32} showText={true} />
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                    <div className="footer-links" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
                         <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)', margin: 0 }}>
                             &copy; 2026 Kangaroo Systems Ltd. All rights reserved.
                         </p>
-                        <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                             <Link to="/terms-of-service" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Terms of Service</Link>
                             <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
                             <Link to="/privacy-policy" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Privacy Policy</Link>

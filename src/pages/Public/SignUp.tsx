@@ -136,7 +136,7 @@ export default function SignUp() {
                                 </select>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                            <div className="auth-grid">
                                 <div className="input-group">
                                     <label className="input-label">First Name</label>
                                     <div style={{ position: 'relative' }}>

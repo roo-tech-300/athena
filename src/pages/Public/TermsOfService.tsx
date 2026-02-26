@@ -9,7 +9,7 @@ export default function TermsOfService() {
 
             <div style={{ paddingTop: '100px', paddingBottom: 'var(--space-20)' }}>
                 <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '0 var(--space-6)' }}>
-                    <div className="card-neumorphic" style={{ padding: 'var(--space-12)', background: 'white', borderRadius: 'var(--radius-2xl)', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div className="card-neumorphic policy-card" style={{ background: 'white', borderRadius: 'var(--radius-2xl)', border: '1px solid rgba(0,0,0,0.05)' }}>
                         <h1 style={{ fontSize: 'var(--text-4xl)', fontWeight: 800, marginBottom: 'var(--space-2)', color: 'var(--color-gray-900)', letterSpacing: '-0.02em' }}>Terms of Service</h1>
                         <p style={{ color: 'var(--color-gray-500)', marginBottom: 'var(--space-10)', fontSize: 'var(--text-sm)', fontWeight: 600 }}>Effective Date: February 25, 2026</p>
 
@@ -77,13 +77,13 @@ export default function TermsOfService() {
             </div>
 
             <footer style={{ padding: 'var(--space-12) 0', borderTop: '1px solid var(--color-gray-100)', background: 'var(--color-white)' }}>
-                <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto', padding: '0 var(--space-6)' }}>
+                <div className="container footer-container">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <Link to="/" style={{ textDecoration: 'none' }}>
                             <Logo size={32} showText={true} />
                         </Link>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                    <div className="footer-links" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                         <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)', margin: 0 }}>
                             &copy; 2026 Kangaroo Systems Ltd. All rights reserved.
                         </p>
