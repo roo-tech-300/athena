@@ -31,7 +31,7 @@ export default function Navbar() {
             height: '72px',
             display: 'flex',
             alignItems: 'center',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+            borderBottom: '1px solid rgba(255, 255, 255, 0.3)'
         }}>
             <div className="container" style={{
                 display: 'flex',
