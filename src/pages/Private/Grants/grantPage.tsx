@@ -108,19 +108,16 @@ export default function GrantPage() {
     }
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--color-gray-50)' }}>
+        <div className="grant-layout">
+            {/* Sidebar Overlay for Mobile */}
+            <div
+                className={`sidebar-overlay ${isSidebarVisible ? 'visible' : ''}`}
+                onClick={() => setIsSidebarVisible(false)}
+            />
             {/* Sidebar */}
-            <aside className="glass" style={{
+            <aside className={`grant-sidebar glass ${isSidebarVisible ? 'open' : ''}`} style={{
                 width: sidebarWidth,
-                height: '100vh',
-                position: 'fixed',
-                left: 0,
-                top: 0,
-                display: 'flex',
-                flexDirection: 'column',
                 padding: isSidebarVisible ? 'var(--space-6)' : 'var(--space-6) var(--space-2)',
-                borderRight: '1px solid rgba(0,0,0,0.05)',
-                zIndex: 10,
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 overflow: 'hidden'
             }}>
@@ -185,23 +182,11 @@ export default function GrantPage() {
             </aside>
 
             {/* Main Content Area */}
-            <main style={{
+            <main className="grant-main" style={{
                 marginLeft: sidebarWidth,
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
             }}>
                 {/* Top Navbar */}
-                <header style={{
-                    height: '72px',
-                    padding: '0 var(--space-8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    background: 'white',
-                    borderBottom: '1px solid rgba(0,0,0,0.05)'
-                }}>
+                <header className="grant-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
                         <button
                             onClick={() => setIsSidebarVisible(!isSidebarVisible)}
@@ -220,7 +205,7 @@ export default function GrantPage() {
                             {isSidebarVisible ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
                         </button>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)', overflow: 'hidden' }}>
                             <button
                                 onClick={() => navigate('/portal')}
                                 style={{
@@ -230,15 +215,25 @@ export default function GrantPage() {
                                     cursor: 'pointer',
                                     padding: 0,
                                     fontWeight: 600,
-                                    fontSize: 'var(--text-sm)'
+                                    fontSize: 'var(--text-sm)',
+                                    whiteSpace: 'nowrap'
                                 }}
                                 onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
                                 onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-gray-500)'}
                             >
                                 Portal
                             </button>
-                            <ChevronRight size={14} />
-                            <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>{grant?.name}</span>
+                            <ChevronRight size={14} style={{ flexShrink: 0 }} />
+                            <span style={{
+                                color: 'var(--color-primary)',
+                                fontWeight: 600,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: 'clamp(100px, 30vw, 400px)'
+                            }}>
+                                {grant?.name}
+                            </span>
                         </div>
                     </div>
 
@@ -336,12 +331,10 @@ export default function GrantPage() {
 
                 {/* Content */}
                 {activeTab === 'Dashboard' ? (
-                    <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                    <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                         <div style={{ marginBottom: 'var(--space-8)' }}>
                             <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-                                <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
                                 <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                             </div>
                         </div>
@@ -349,12 +342,12 @@ export default function GrantPage() {
                     </div>
                 ) : activeTab === 'Budget tracker' ? (
                     <PremiumFeatureGuard department={department} featureName="Budget Tracker">
-                        <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                        <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                             <div style={{ marginBottom: 'var(--space-8)' }}>
                                 <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                                 </div>
                             </div>
@@ -363,12 +356,12 @@ export default function GrantPage() {
                     </PremiumFeatureGuard>
                 ) : activeTab === 'Milestones' ? (
                     <PremiumFeatureGuard department={department} featureName="Milestones">
-                        <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                        <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                             <div style={{ marginBottom: 'var(--space-8)' }}>
                                 <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                                 </div>
                             </div>
@@ -377,12 +370,12 @@ export default function GrantPage() {
                     </PremiumFeatureGuard>
                 ) : activeTab === 'Deliverables' ? (
                     <PremiumFeatureGuard department={department} featureName="Deliverables">
-                        <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                        <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                             <div style={{ marginBottom: 'var(--space-8)' }}>
                                 <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                                 </div>
                             </div>
@@ -390,12 +383,12 @@ export default function GrantPage() {
                         </div>
                     </PremiumFeatureGuard>
                 ) : activeTab === 'Personnel' ? (
-                    <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                    <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                         <div style={{ marginBottom: 'var(--space-8)' }}>
                             <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                 <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                                <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
                                 <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                             </div>
                         </div>
@@ -403,12 +396,12 @@ export default function GrantPage() {
                     </div>
                 ) : activeTab === 'Documents' ? (
                     <PremiumFeatureGuard department={department} featureName="Documents">
-                        <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                        <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                             <div style={{ marginBottom: 'var(--space-8)' }}>
                                 <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
                                     <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                                 </div>
                             </div>
@@ -416,12 +409,12 @@ export default function GrantPage() {
                         </div>
                     </PremiumFeatureGuard>
                 ) : activeTab === 'Settings' ? (
-                    <div style={{ padding: 'var(--space-8)', flex: 1 }}>
+                    <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                         <div style={{ marginBottom: 'var(--space-8)' }}>
                             <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                 <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} />
+                                <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
                                 <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
                             </div>
                         </div>

@@ -22,6 +22,7 @@ export default function Portal() {
     const navigate = useNavigate()
     const { user } = useAuth()
     const { data: grantsData, isLoading: grantsLoading, refetch: refreshGrants } = useUserGrants(user?.id || '')
+    const MAX_DESCRIPTION_LENGTH = 9875;
 
     // Format grants for the UI
     const grants = (grantsData || []).map((g: any) => ({
@@ -432,7 +433,33 @@ export default function Portal() {
                 <div className="input-group"><label className="input-label">Grant Title</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="input-field" placeholder="e.g. Advanced Bio-Engineering Study 2026" /></div>
                 <div className="input-group"><label className="input-label">Grant Type</label><select value={type} onChange={(e) => setType(e.target.value)} className="input-field"><option>Research</option><option>Infrastructure</option><option>Fellowship</option><option>Equipment</option></select></div>
                 <div className="input-group"><label className="input-label">Initial Funding (₦)</label><input type="text" value={expectedFunding === 0 ? '' : expectedFunding.toLocaleString()} onChange={(e) => { const val = e.target.value.replace(/\D/g, ''); setExpectedFunding(val ? parseInt(val, 10) : 0); }} className="input-field" placeholder="0" /></div>
-                <div className="input-group"><label className="input-label">Project Description</label><textarea className="input-field" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="Brief overview of the grant purpose..." style={{ resize: 'none' }}></textarea></div>
+                <div className="input-group">
+                    <label className="input-label">Project Description</label>
+
+                    <textarea
+                        className="input-field"
+                        value={description}
+                        maxLength={MAX_DESCRIPTION_LENGTH}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={3}
+                        placeholder="Brief overview of the grant purpose..."
+                        style={{ resize: 'none' }}
+                    />
+
+                    <div
+                        style={{
+                        textAlign: 'right',
+                        fontSize: '12px',
+                        marginTop: '4px',
+                        color:
+                            description.length > MAX_DESCRIPTION_LENGTH * 0.9
+                            ? '#ef4444'
+                            : '#6b7280',
+                        }}
+                    >
+                        {MAX_DESCRIPTION_LENGTH - description.length} characters remaining
+                    </div>
+                </div>            
             </Modal>
 
             <Modal
