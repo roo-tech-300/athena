@@ -45,7 +45,7 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant, onDetails, onWorkspace, on
                 )}
             </div>
 
-            <h3 className="truncate-2" style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)', flex: 1, fontWeight: 700, minHeight: '3.5em' }}>{grant.title}</h3>
+            <h3 className="truncate-3" style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)', flex: 1, fontWeight: 700, minHeight: '4.8em', lineHeight: '1.6' }}>{grant.title}</h3>
 
             <div style={{ background: 'var(--color-gray-50)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-6)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>

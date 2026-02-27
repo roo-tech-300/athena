@@ -11,7 +11,7 @@ interface BudgetStatsProps {
 
 export default function BudgetStats({ totalFunds, totalSpent, available, allocatedFunds }: BudgetStatsProps) {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-6)' }}>
+        <div className="metrics-grid metrics-grid-4">
             <div className="card-neumorphic glass" style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
                     <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>Total Funds</span>

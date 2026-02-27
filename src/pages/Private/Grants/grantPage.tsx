@@ -345,11 +345,6 @@ export default function GrantPage() {
                         <div style={{ padding: 'clamp(var(--space-4), 5vw, var(--space-8))', flex: 1 }}>
                             <div style={{ marginBottom: 'var(--space-8)' }}>
                                 <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>{activeTab}</h1>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-                                    <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Project: <span style={{ color: 'var(--color-gray-900)', fontWeight: 600 }}>{grant.name}</span></p>
-                                    <div style={{ width: '1px', height: '14px', background: 'var(--color-gray-300)' }} className="hide-mobile" />
-                                    <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>Grant Code: <span style={{ color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '0.05em', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>{grant.code}</span></p>
-                                </div>
                             </div>
                             <BudgetTracker grant={grant} myMembership={myMembership} />
                         </div>

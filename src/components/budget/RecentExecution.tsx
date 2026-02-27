@@ -19,7 +19,14 @@ export default function RecentExecution({
 }: RecentExecutionProps) {
     return (
         <div className="card-neumorphic" style={{ padding: 'var(--space-6)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '24px',
+                flexWrap: 'wrap',
+                gap: 'var(--space-4)'
+            }}>
                 <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>Recent Capital Execution</h3>
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                     <span onClick={onViewHistory} style={{ cursor: 'pointer', color: 'var(--color-primary)', fontWeight: 700, fontSize: '12px' }}>View History</span>
@@ -28,7 +35,7 @@ export default function RecentExecution({
                     )}
                 </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className="metrics-grid metrics-grid-3">
                 {transactions.slice(0, 3).map((tx: any) => (
                     <div
                         key={tx.$id}
@@ -49,8 +56,8 @@ export default function RecentExecution({
                         className="capital-card"
                     >
                         <div>
-                            <div style={{ fontWeight: 600, fontSize: '14px' }}>{tx.budgetItem?.description}</div>
-                            <div style={{ color: '#ef4444', fontWeight: 700 }}>-<NairaSymbol />{tx.amount.toLocaleString()}</div>
+                            <div style={{ fontWeight: 600, fontSize: '14px' }} className="truncate-1">{tx.budgetItem?.description}</div>
+                            <div style={{ color: '#ef4444', fontWeight: 700 }}><NairaSymbol />{tx.amount.toLocaleString()}</div>
                         </div>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             {tx.proof && <FileText size={16} color="var(--color-primary)" style={{ opacity: 0.7 }} />}

@@ -27,7 +27,7 @@ export default function BudgetComposition({ budgetItems, totalFunds, totalSpent 
     })).filter(c => c.amount > 0)
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
+        <div className="dashboard-layout-grid">
             <div className="card-neumorphic" style={{ gridColumn: 'span 8', padding: 'var(--space-6)' }}>
                 <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: '24px' }}>Budget Composition</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
