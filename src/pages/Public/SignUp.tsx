@@ -111,7 +111,7 @@ export default function SignUp() {
                         <div style={{ marginBottom: 'var(--space-8)' }}>
                             <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>Create Account</h1>
                             <p style={{ color: 'var(--color-gray-500)', fontSize: 'var(--text-sm)' }}>
-                                Set up your workspace in less than 2 minutes.
+                                Set up your account to get started
                             </p>
                         </div>
 
@@ -192,8 +192,7 @@ export default function SignUp() {
                         </form>
 
                         <div style={{ textAlign: 'center', marginTop: 'var(--space-8)', fontSize: 'var(--text-sm)', color: 'var(--color-gray-500)' }}>
-                            Already managing research? <br />
-                            <Link to="/login" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>Sign in to Granto</Link>
+                            Already have an account? <Link to="/login" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>Sign in</Link>
                         </div>
                     </div>
 

@@ -92,7 +92,7 @@ export default function Login() {
                             <div className="input-group" style={{ marginBottom: 'var(--space-8)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
                                     <label className="input-label" style={{ margin: 0 }}>Password</label>
-                                    <a href="#" style={{ fontSize: 'var(--text-xs)', fontWeight: 600 }}>Recovery Options</a>
+                                    {/* <a href="#" style={{ fontSize: 'var(--text-xs)', fontWeight: 600 }}>Recovery Options</a> */}
                                 </div>
                                 <div style={{ position: 'relative' }}>
                                     <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gray-400)' }}>
@@ -117,8 +117,7 @@ export default function Login() {
                         </form>
 
                         <div style={{ textAlign: 'center', marginTop: 'var(--space-10)', fontSize: 'var(--text-sm)', color: 'var(--color-gray-500)' }}>
-                            New to the strategic platform? <br />
-                            <Link to="/signup" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>Register your department</Link>
+                            Don't have an account? <Link to="/signup" style={{ fontWeight: 700, color: 'var(--color-primary)' }}>   Sign Up</Link>
                         </div>
                     </div>
 

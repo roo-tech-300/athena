@@ -221,14 +221,7 @@ export default function Portal() {
                 <div className="container" style={{ maxWidth: '1200px' }}>
 
                     {/* Header Section */}
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-end',
-                        marginBottom: 'var(--space-12)',
-                        paddingBottom: 'var(--space-6)',
-                        borderBottom: '1px solid rgba(0,0,0,0.05)'
-                    }}>
+                    <div className="portal-header">
                         <div>
                             <span style={{
                                 color: 'var(--color-primary)',
@@ -245,7 +238,7 @@ export default function Portal() {
 
                         {/* Tab Navigation */}
                         {isAnyDeptAdmin && (
-                            <div style={{ display: 'flex', gap: 'var(--space-1)', background: 'rgba(0,0,0,0.03)', padding: '4px', borderRadius: 'var(--radius-lg)' }}>
+                            <div className="portal-tabs" style={{ background: 'rgba(0,0,0,0.03)', padding: '4px', borderRadius: 'var(--radius-lg)' }}>
                                 {(['grants', 'departments'] as const).map((tab) => (
                                     <button
                                         key={tab}
@@ -271,12 +264,7 @@ export default function Portal() {
                     </div>
 
                     {/* Statistics Bar */}
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: 'var(--space-6)',
-                        marginBottom: 'var(--space-12)',
-                    }}>
+                    <div className="portal-stats-grid">
                         <StatCard
                             label="Total Grants"
                             value={grants.length}
@@ -310,7 +298,7 @@ export default function Portal() {
                     )}
 
                     {/* Main Content Area */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)', marginTop: 'var(--space-6)' }}>
+                    <div className="portal-main-grid">
                         {activeTab === 'grants' ? (
                             <div style={{ gridColumn: 'span 12' }}>
                                 {grantsLoading ? (
@@ -343,9 +331,9 @@ export default function Portal() {
                                                 <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, rgba(0,0,0,0.05), transparent)', marginLeft: 'var(--space-4)' }} />
                                             </div>
 
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
+                                            <div className="portal-main-grid">
                                                 {groupData.grants.map((grant: Grant) => (
-                                                    <div key={grant.id} style={{ gridColumn: 'span 4' }}>
+                                                    <div key={grant.id} className="portal-card-span">
                                                         <GrantCard
                                                             grant={grant}
                                                             onDetails={handleOpenDetails}
@@ -356,10 +344,9 @@ export default function Portal() {
                                                     </div>
                                                 ))}
                                                 <div
-                                                    className="card-neumorphic"
+                                                    className="card-neumorphic portal-card-span"
                                                     onClick={() => { setSelectedDeptId(groupId); setIsCreateModalOpen(true); }}
                                                     style={{
-                                                        gridColumn: 'span 4',
                                                         display: 'flex',
                                                         flexDirection: 'column',
                                                         alignItems: 'center',
@@ -411,7 +398,7 @@ export default function Portal() {
                                     <Button variant="primary" style={{ borderRadius: 'var(--radius-full)' }} onClick={() => setIsCreateDeptModalOpen(true)}>+ Create Research Group</Button>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
+                                <div className="portal-main-grid">
                                     {departments.length === 0 ? (
                                         <div style={{ gridColumn: 'span 12', textAlign: 'center', padding: 'var(--space-20)', background: 'white', borderRadius: 'var(--radius-xl)' }}>
                                             <Building2 size={48} style={{ color: 'var(--color-gray-200)', marginBottom: 'var(--space-4)' }} />
@@ -421,7 +408,7 @@ export default function Portal() {
                                         </div>
                                     ) : (
                                         departments.map((dept: any) => (
-                                            <div key={dept.$id} style={{ gridColumn: 'span 6' }}>
+                                            <div key={dept.$id} className="portal-dept-span">
                                                 <DeptCard
                                                     dept={dept}
                                                     grantCount={grants.filter(g => g.department === dept.$id).length}

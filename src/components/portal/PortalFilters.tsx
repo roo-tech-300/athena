@@ -34,7 +34,7 @@ const PortalFilters: React.FC<PortalFiltersProps> = ({
     }, [])
 
     return (
-        <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-10)', alignItems: 'center' }}>
+        <div className="portal-filters-container" style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-10)', alignItems: 'center' }}>
             {/* Pill Search Bar */}
             <div style={{ position: 'relative', flex: 1 }}>
                 <Search style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gray-400)' }} size={18} />
@@ -75,7 +75,8 @@ const PortalFilters: React.FC<PortalFiltersProps> = ({
                         cursor: 'pointer',
                         fontWeight: 600,
                         fontSize: 'var(--text-sm)',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.2s',
+                        whiteSpace: 'nowrap'
                     }}
                 >
                     <Filter size={16} />
@@ -125,9 +126,9 @@ const PortalFilters: React.FC<PortalFiltersProps> = ({
                 )}
             </div>
 
-            <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                <Button variant="outline" size="md" onClick={onJoin} style={{ borderRadius: 'var(--radius-full)', padding: '10px 24px' }}>Join Grant</Button>
-                <Button variant="primary" size="md" onClick={onCreate} style={{ borderRadius: 'var(--radius-full)', padding: '10px 24px' }}>+ Create Grant</Button>
+            <div className="portal-filters-actions" style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                <Button variant="outline" size="md" onClick={onJoin} style={{ borderRadius: 'var(--radius-full)', padding: '10px 24px', whiteSpace: 'nowrap' }}>Join Grant</Button>
+                <Button variant="primary" size="md" onClick={onCreate} style={{ borderRadius: 'var(--radius-full)', padding: '10px 24px', whiteSpace: 'nowrap' }}>+ Create Grant</Button>
             </div>
         </div>
     )
