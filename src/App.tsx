@@ -8,6 +8,7 @@ import DeptPage from './pages/Private/Departments/DeptPage'
 import PrivacyPolicy from './pages/Public/PrivacyPolicy'
 import TermsOfService from './pages/Public/TermsOfService'
 import Team from './pages/Public/Team'
+import TeamMemberDetail from './pages/Public/TeamMemberDetail'
 
 import { ToastProvider } from './components/ui/Toast'
 import { AuthProvider } from './useContext/context'
@@ -26,6 +27,7 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/team" element={<Team />} />
+            <Route path="/team/:slug" element={<TeamMemberDetail />} />
 
             <Route element={<PublicRoute />}>
               <Route path="/login" element={<Login />} />

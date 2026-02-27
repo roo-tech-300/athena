@@ -4,15 +4,24 @@
     <loc>https://www.granto.com.ng/</loc>
   </url>
   <url>
-    <loc>https://www.granto.com.ng/login</loc>
-  </url>
-  <url>
-    <loc>https://www.granto.com.ng/signup</loc>
-  </url>
-  <url>
     <loc>https://www.granto.com.ng/privacy-policy</loc>
   </url>
   <url>
     <loc>https://www.granto.com.ng/terms-of-service</loc>
+  </url>
+  <url>
+    <loc>https://www.granto.com.ng/teams/member-one-slug</loc>
+  </url>
+  <url>
+    <loc>https://www.granto.com.ng/teams/member-two-slug</loc>
+  </url>
+  <url>
+    <loc>https://www.granto.com.ng/teams/member-three-slug</loc>
+  </url>
+  <url>
+    <loc>https://www.granto.com.ng/teams/member-four-slug</loc>
+  </url>
+  <url>
+    <loc>https://www.granto.com.ng/teams/member-five-slug</loc>
   </url>
 </urlset>
