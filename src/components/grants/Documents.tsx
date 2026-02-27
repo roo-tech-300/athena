@@ -203,11 +203,7 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
             {/* Stats Cards */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: 'var(--space-6)'
-            }}>
+            <div className="metrics-grid metrics-grid-4">
                 <div className="card-neumorphic glass" style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
                         <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>Total Docs</span>
@@ -263,7 +259,15 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
 
             {/* Main Table */}
             <div className="card-neumorphic" style={{ padding: '0' }}>
-                <div style={{ padding: 'var(--space-6)', borderBottom: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{
+                    padding: 'var(--space-6)',
+                    borderBottom: '1px solid rgba(0,0,0,0.05)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 'var(--space-4)'
+                }}>
                     <div>
                         <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>
                             Document Library
@@ -278,8 +282,8 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                     </Button>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                         <thead>
                             <tr style={{ background: 'var(--color-gray-25)' }}>
                                 {['Document Title', 'Linked To', 'Date Added', 'Status', ''].map((h, i) => (
@@ -441,7 +445,7 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
                                     </select>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                                <div className="metrics-grid metrics-grid-2">
                                     <div>
                                         <label style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: 'var(--space-2)' }}>Link To *</label>
                                         <select

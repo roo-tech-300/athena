@@ -125,11 +125,7 @@ export default function Milestones({ grant, myMembership }: { grant?: any, myMem
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
             {/* Stats Cards */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: 'var(--space-6)'
-            }}>
+            <div className="metrics-grid metrics-grid-4">
                 <div className="card-neumorphic glass" style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
                         <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>Total Milestones</span>
@@ -189,7 +185,15 @@ export default function Milestones({ grant, myMembership }: { grant?: any, myMem
             {/* Main Table */}
             <div className="card-neumorphic" style={{ padding: '0' }}>
                 {/* Table Header */}
-                <div style={{ padding: 'var(--space-6)', borderBottom: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{
+                    padding: 'var(--space-6)',
+                    borderBottom: '1px solid rgba(0,0,0,0.05)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 'var(--space-4)'
+                }}>
                     <div>
                         <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>
                             Milestone Timeline
@@ -204,8 +208,8 @@ export default function Milestones({ grant, myMembership }: { grant?: any, myMem
                 </div>
 
                 {/* Table */}
-                <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                         <thead>
                             <tr style={{ background: 'var(--color-gray-25)' }}>
                                 {['Milestone Title', 'Due Date', 'Status', 'Priority', ''].map((h, i) => (
@@ -391,7 +395,7 @@ export default function Milestones({ grant, myMembership }: { grant?: any, myMem
                                 </div>
 
                                 {/* Due Date and Status */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                                <div className="metrics-grid metrics-grid-2">
                                     <div>
                                         <label style={{
                                             display: 'block',

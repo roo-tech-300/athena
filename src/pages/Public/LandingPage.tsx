@@ -224,9 +224,9 @@ export default function LandingPage() {
                             <Link to="/terms-of-service" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Terms of Service</Link>
                             <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
                             <Link to="/privacy-policy" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Privacy Policy</Link>
-                            {/* <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
+                            <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
                             <Link to="/team" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', textDecoration: 'none' }}>Meet the Team</Link>
-                            <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span> */}
+                            <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>&middot;</span>
                             <span style={{ fontSize: '10px', color: 'var(--color-gray-300)' }}>Kangaroo Technologies</span>
                         </div>
                     </div>

@@ -228,7 +228,9 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                 background: 'rgba(0,0,0,0.03)',
                 padding: '4px',
                 borderRadius: 'var(--radius-lg)',
-                width: 'fit-content'
+                width: '100%',
+                flexWrap: 'wrap',
+                alignItems: 'center'
             }}>
                 <button
                     onClick={() => setActiveTab('Accepted')}
@@ -286,9 +288,15 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                         size="sm"
                         variant="primary"
                         onClick={() => setIsAddModalOpen(true)}
-                        style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}
+                        style={{
+                            marginLeft: 'auto',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            minWidth: 'fit-content'
+                        }}
                     >
-                        <UserPlus size={16} /> Add Member
+                        <UserPlus size={16} /> <span className="hide-mobile">Add Member</span><span className="show-mobile">Add</span>
                     </Button>
                 )}
             </div>
@@ -429,7 +437,7 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                             ) : (
                                 pendingMembers.map((member: any) => (
                                     <div key={member.$id} className="card-neumorphic" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', background: 'rgba(245, 158, 11, 0.03)' }}>
-                                        <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', flexWrap: 'wrap' }}>
                                             <div style={{
                                                 width: '48px', height: '48px', borderRadius: '50%',
                                                 background: 'var(--color-gray-200)',
@@ -438,7 +446,7 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                                             }}>
                                                 {getUserInitials(member.user)}
                                             </div>
-                                            <div style={{ flex: 1 }}>
+                                            <div style={{ flex: '1', minWidth: '200px' }}>
                                                 <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 700, margin: 0 }}>{member.user?.name || 'Unknown User'}</h3>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginTop: '4px' }}>
                                                     <Mail size={12} color="var(--color-gray-500)" />
@@ -446,7 +454,28 @@ export default function Personnel({ grant, myMembership }: { grant?: any, myMemb
                                                 </div>
                                             </div>
                                             {isPI && (
-                                                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                                                <div style={{ display: 'flex', gap: 'var(--space-2)', width: '100%', justifyContent: 'flex-end', marginTop: 'var(--space-2)' }} className="show-mobile-flex">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => handleUpdateStatus(member.$id, 'Rejected')}
+                                                        disabled={isUpdatingMember}
+                                                        style={{ color: 'var(--color-primary)', borderColor: 'var(--color-primary)', flex: 1 }}
+                                                    >
+                                                        Reject
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => handleUpdateStatus(member.$id, 'Accepted')}
+                                                        disabled={isUpdatingMember}
+                                                        style={{ background: 'var(--color-primary)', flex: 1 }}
+                                                    >
+                                                        Accept
+                                                    </Button>
+                                                </div>
+                                            )}
+                                            {isPI && (
+                                                <div style={{ display: 'flex', gap: 'var(--space-2)' }} className="hide-mobile">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"

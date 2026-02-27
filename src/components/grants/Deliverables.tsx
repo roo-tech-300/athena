@@ -372,7 +372,7 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
             {/* Stats Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-6)' }}>
+            <div className="metrics-grid metrics-grid-4">
                 <div className="card-neumorphic glass" style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
                         <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>Total Deliverables</span>
@@ -406,7 +406,7 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
             {/* Pending Approvals Section (PI Only) */}
             {isPI && pendingApprovalTasks.length > 0 && (
                 <div className="card-neumorphic" style={{ padding: 'var(--space-6)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-6)', flexWrap: 'wrap' }}>
                         <div style={{
                             width: '32px',
                             height: '32px',
@@ -535,15 +535,23 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
 
             {/* Main Table */}
             <div className="card-neumorphic" style={{ padding: '0' }}>
-                <div style={{ padding: 'var(--space-6)', borderBottom: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{
+                    padding: 'var(--space-6)',
+                    borderBottom: '1px solid rgba(0,0,0,0.05)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 'var(--space-4)'
+                }}>
                     <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>Deliverables Schedule</h2>
                     {isPI && (
                         <Button variant="primary" size="sm" onClick={() => setIsAddModalOpen(true)}>+ Add Deliverable</Button>
                     )}
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                         <thead>
                             <tr style={{ background: 'var(--color-gray-50)' }}>
                                 {['Title', 'Due Date', 'Status', 'Tasks', ''].map((h, i) => (
@@ -617,10 +625,10 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                                                                             background: 'white',
                                                                             padding: '12px',
                                                                             borderRadius: 'var(--radius-md)',
-                                                                            display: 'grid',
-                                                                            gridTemplateColumns: 'auto 1fr auto auto',
+                                                                            display: 'flex',
+                                                                            flexWrap: 'wrap',
                                                                             alignItems: 'center',
-                                                                            gap: '16px',
+                                                                            gap: 'var(--space-4)',
                                                                             cursor: isClickable ? 'pointer' : 'default',
                                                                             opacity: task.status === 'Completed' ? 0.7 : 1,
                                                                             transition: 'all 0.2s ease',
@@ -732,7 +740,7 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                    <div className="metrics-grid metrics-grid-2">
                         <div>
                             <label className="input-label">Status *</label>
                             <select
