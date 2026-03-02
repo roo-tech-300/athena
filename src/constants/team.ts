@@ -22,7 +22,7 @@ export const teamMembers = [
         bio: "Eluzia is a Computer Engineer at the Federal University of Technology, Minna, with hands-on experience in software development, operations management, and technical instruction. He has built practical expertise in frontend development using modern web technologies including React and TypeScript, and has led real-world projects such as a ticketing platform for campus events and a postgraduate management system. His operational background includes managing day-to-day business functions, inventory, and customer service at Global Computer Technologies, where he also taught web development. Eluzia brings a blend of technical skill, leadership, and a self-driven approach to his role overseeing the company's operations.",
         linkedin: "#",
         twitter: "#",
-        email: "elena@granto.ai"
+        email: "eluziaako@gmail.com"
     },
     {
         slug: "gabriel-godwin",

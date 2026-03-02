@@ -22,7 +22,7 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="glass" style={{
+        <nav style={{
             position: 'fixed',
             top: 0,
             left: 0,
@@ -31,7 +31,9 @@ export default function Navbar() {
             height: '72px',
             display: 'flex',
             alignItems: 'center',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.3)'
+            backgroundColor: 'var(--color-white)',
+            borderBottom: '1px solid var(--color-gray-100)',
+            boxShadow: 'var(--shadow-sm)'
         }}>
             <div className="container" style={{
                 display: 'flex',

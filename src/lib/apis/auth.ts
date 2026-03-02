@@ -43,13 +43,15 @@ export const createAccount = async (title: string, firstName: string, lastName: 
 
 export const loginAccount = async (email: string, password: string) => {
     try {
-        const session = await account.createEmailPasswordSession(
-            email,
-            password
-        )
-        return session
+        const currentUser = await account.get().catch(() => null)
+
+        if (currentUser) {
+            return currentUser
+        }
+
+        return await account.createEmailPasswordSession(email, password)
+
     } catch (error) {
-        console.log(error)
         throw error
     }
 }
