@@ -6,10 +6,10 @@
         {
           "type": "header",
           "key": "user-agent",
-          "value": "(Googlebot|Bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot)"
+          "value": "(Googlebot|Bingbot|DuckDuckBot|Slurp|Baiduspider|YandexBot)"
         }
       ],
-      "destination": "https://service.prerender.io/https://www.granto.com.ng/$1"
+      "destination": "https://service.prerender.io/Qn5Iz4rKCGXrQ0jOp4mp/https://%{host}/$1"
     },
     {
       "source": "/(.*)",
