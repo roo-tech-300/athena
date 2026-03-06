@@ -1,19 +1,5 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": "(Googlebot|Bingbot|DuckDuckBot|Slurp|Baiduspider|YandexBot)"
-        }
-      ],
-      "destination": "https://service.prerender.io/Qn5Iz4rKCGXrQ0jOp4mp/https://%{host}/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
