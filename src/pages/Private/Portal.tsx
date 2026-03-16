@@ -127,7 +127,7 @@ export default function Portal() {
             setIsCreateModalOpen(true);
         } catch (error) {
             console.error(error);
-            toast.error("Failed to create funding group");
+            toast.error("Failed to create research group");
         }
     }
 
@@ -404,7 +404,7 @@ export default function Portal() {
                                         <div style={{ gridColumn: 'span 12', textAlign: 'center', padding: 'var(--space-20)', background: 'white', borderRadius: 'var(--radius-xl)' }}>
                                             <Building2 size={48} style={{ color: 'var(--color-gray-200)', marginBottom: 'var(--space-4)' }} />
                                             <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 600 }}>No research groups found</h3>
-                                            <p style={{ color: 'var(--color-gray-500)', marginBottom: 'var(--space-6)' }}>You haven't joined or created any funding groups yet.</p>
+                                            <p style={{ color: 'var(--color-gray-500)', marginBottom: 'var(--space-6)' }}>You haven't joined or created any research groups yet.</p>
                                             <Button variant="primary" onClick={() => setIsCreateDeptModalOpen(true)}>Create First Research Group</Button>
                                         </div>
                                     ) : (
@@ -513,12 +513,12 @@ export default function Portal() {
                     ))}
                     <div style={{ height: '1px', background: 'var(--color-gray-100)', margin: 'var(--space-2) 0' }} />
                     <button onClick={() => { setIsSelectDeptModalOpen(false); setIsCreateDeptModalOpen(true); }} className="btn-ghost" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-2)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', color: 'var(--color-primary)', fontWeight: 700, cursor: 'pointer', border: '1px dashed var(--color-primary-light)' }}>
-                        <PlusCircle size={18} /> Create New Funding Group
+                        <PlusCircle size={18} /> Create New Research Group
                     </button>
                 </div>
             </Modal>
 
-            <Modal isOpen={isCreateDeptModalOpen} onClose={() => setIsCreateDeptModalOpen(false)} title="Create Funding Group" footer={<><Button variant="ghost" onClick={() => setIsCreateDeptModalOpen(false)}>Cancel</Button><Button onClick={handleCreateDepartment} disabled={isCreatingDept}>{isCreatingDept ? <Loader size="sm" variant="white" /> : 'Create Group'}</Button></>}>
+            <Modal isOpen={isCreateDeptModalOpen} onClose={() => setIsCreateDeptModalOpen(false)} title="Create Research Group" footer={<><Button variant="ghost" onClick={() => setIsCreateDeptModalOpen(false)}>Cancel</Button><Button onClick={handleCreateDepartment} disabled={isCreatingDept}>{isCreatingDept ? <Loader size="sm" variant="white" /> : 'Create Group'}</Button></>}>
                 <div className="input-group"><label className="input-label">Name of Research Group</label><input type="text" className="input-field" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="e.g. Biomedical Sciences" /></div>
             </Modal>
         </div>

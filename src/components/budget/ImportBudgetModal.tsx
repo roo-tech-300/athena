@@ -7,6 +7,7 @@ import { cleanBudgetFile, mapBudgetRows, parseBudgetFile } from '../../utils/Bud
 import { useCreateBudgetItem } from '../../hooks/useBudget'
 import NairaSymbol from '../ui/NairaSymbol'
 import { BUDGET_CATEGORY_MAP, matchCategory } from '../../constants/budget'
+import { convertBudget } from '../../utils/AI/ConvertBudget'
 
 interface ImportBudgetModalProps {
     isOpen: boolean
@@ -69,12 +70,30 @@ export default function ImportBudgetModal({ isOpen, onClose, grantId }: ImportBu
             const cleanedRows = cleanBudgetFile(rows);
             const mapped = mapBudgetRows(cleanedRows);
 
-            if (mapped.length === 0) {
-                addToast("No valid budget items found in the file", "warning");
+            let finalItems = mapped;
+
+            try {
+            const aiMapped = await convertBudget(mapped);
+
+            if (aiMapped && aiMapped.length > 0) {
+                finalItems = aiMapped;
+            }
+            } catch (error) {
+            console.warn("AI normalization failed, using parsed data.");
+            }
+
+            if (finalItems.length === 0) {
+            addToast("No valid budget items found in the file", "warning");
             } else {
-                setItems(mapped.map((item, idx) => ({ ...item, id: `${idx}-${Date.now()}` })));
-                setStep('review');
-                addToast(`Found ${mapped.length} items to review`, "success");
+            setItems(
+                finalItems.map((item, idx) => ({
+                ...item,
+                id: `${idx}-${Date.now()}`
+                }))
+            );
+
+            setStep("review");
+            addToast(`Found ${finalItems.length} items to review`, "success");
             }
         } catch (error) {
             console.error(error);

@@ -84,45 +84,45 @@ export const cleanBudgetFile = (rows: any[][]) => {
 };
 
 
-export const mapBudgetRows = (rows: any[][]): BudgetItem[] => {
-  const results: BudgetItem[] = [];
-  let currentCategory = "Uncategorized";
+  export const mapBudgetRows = (rows: any[][]): BudgetItem[] => {
+    const results: BudgetItem[] = [];
+    let currentCategory = "Uncategorized";
 
-  const parseAmount = (value: any) => {
-    if (value == null) return NaN;
-    const cleaned = String(value).replace(/,/g, "").trim();
-    return Number(cleaned);
-  };
+    const parseAmount = (value: any) => {
+      if (value == null) return NaN;
+      const cleaned = String(value).replace(/,/g, "").trim();
+      return Number(cleaned);
+    };
 
-  for (const row of rows) {
-    const rawDescription = String(row[0] ?? "")
-      .replace(/\r?\n/g, " ")
-      .trim();
+    for (const row of rows) {
+      const rawDescription = String(row[0] ?? "")
+        .replace(/\r?\n/g, " ")
+        .trim();
 
-    const amount =
-      parseAmount(row[5]) ||
-      parseAmount(row[2]);
+      const amount =
+        parseAmount(row[5]) ||
+        parseAmount(row[2]);
 
-    const hasValidAmount =
-      !isNaN(amount) && amount > 0;
+      const hasValidAmount =
+        !isNaN(amount) && amount > 0;
 
-    // 🔵 CATEGORY DETECTION
-    // If no valid amount, treat as category row
-    if (!hasValidAmount && rawDescription.length > 2) {
-      currentCategory = rawDescription;
-      continue; // move to next row
-    }
+      // 🔵 CATEGORY DETECTION
+      // If no valid amount, treat as category row
+      if (!hasValidAmount && rawDescription.length > 2) {
+        currentCategory = rawDescription;
+        continue; // move to next row
+      }
 
-    // 🟢 REAL BUDGET ITEM
-    if (hasValidAmount && rawDescription.length > 3) {
-      results.push({
+      // 🟢 REAL BUDGET ITEM
+      if (hasValidAmount && rawDescription.length > 3) {
+        results.push({
         description: rawDescription,
         total: amount,
-        category: currentCategory,
+        category: "Uncategorized",
       });
+      }
     }
-  }
 
-  return results;
-};
+    return results;
+  };
 
