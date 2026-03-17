@@ -6,10 +6,16 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
-      },
-    }),
+    // React Compiler requires React versions that export `react/compiler-runtime`.
+    // Keep it opt-in so production builds (e.g. Vercel) don't break on React 18.
+    react(
+      process.env.REACT_COMPILER === 'true'
+        ? {
+            babel: {
+              plugins: [['babel-plugin-react-compiler']],
+            },
+          }
+        : undefined,
+    ),
   ],
 })
