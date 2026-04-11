@@ -907,13 +907,30 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                         </p>
                     </div>
 
-                    <div>
-                        <label className="input-label">Description</label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                            <label className="input-label" style={{ marginBottom: 0 }}>Description</label>
+                            <span style={{ fontSize: '10px', color: (taskForm.description?.length || 0) >= 3000 ? '#ef4444' : 'var(--color-gray-400)' }}>
+                                {3000 - (taskForm.description?.length || 0)} characters remaining
+                            </span>
+                        </div>
                         <textarea
                             className="input-field"
-                            style={{ minHeight: '100px', resize: 'vertical' }}
+                            style={{ 
+                                minHeight: '100px', 
+                                maxHeight: '300px', 
+                                resize: 'none', 
+                                overflowY: 'auto',
+                                fontFamily: 'inherit',
+                                lineHeight: '1.5'
+                            }}
+                            maxLength={3000}
                             value={taskForm.description}
-                            onChange={e => setTaskForm({ ...taskForm, description: e.target.value })}
+                            onChange={e => {
+                                setTaskForm({ ...taskForm, description: e.target.value });
+                                e.target.style.height = 'inherit';
+                                e.target.style.height = `${e.target.scrollHeight}px`;
+                            }}
                             placeholder="Describe the specific objectives of this task..."
                         />
                     </div>

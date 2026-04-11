@@ -55,10 +55,12 @@ export const createDeliverableTasks = async (
     action?: "Transaction" | "Other",
     actionItem?: string,
 ) => {
-    const res = await database.createRow(
-        import.meta.env.VITE_APPWRITE_DATABASE_ID,
-        import.meta.env.VITE_APPWRITE_DELIVERABLE_TASKS_ID,
-        ID.unique(),
+
+    try {
+        const res = await database.createRow(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_DELIVERABLE_TASKS_ID,
+            ID.unique(),
         {
             deliverable,
             title,
@@ -72,6 +74,10 @@ export const createDeliverableTasks = async (
     )
     createActivity(grantId, `You have a task ${title} to complete under ${deliverableTitle} deliverables`, "Task", res.$id, involvedUserIds)
     return res
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 export const updateDeliverableTask = async (
