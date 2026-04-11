@@ -159,7 +159,7 @@ export default function Documents({ grant, myMembership }: { grant?: any, myMemb
             console.error('Google Auth Failed:', error)
             addToast("Google authentication failed", "error")
         },
-        scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file'
+        scope: 'https://www.googleapis.com/auth/drive.file'
     })
 
     if (!grant) return <Loader size="xl" label="Accessing archive..." />
