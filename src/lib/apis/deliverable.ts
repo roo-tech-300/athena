@@ -75,7 +75,6 @@ export const createDeliverableTasks = async (
     createActivity(grantId, `You have a task ${title} to complete under ${deliverableTitle} deliverables`, "Task", res.$id, involvedUserIds)
     return res
     } catch (error) {
-        console.log(error);
         throw error;
     }
 }

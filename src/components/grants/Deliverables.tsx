@@ -101,6 +101,76 @@ const formatDate = (dateString: string) => {
     })
 }
 
+const TaskDescription = ({ text, size = 'small' }: { text?: string, size?: 'small' | 'medium' }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    
+    if (!text) return null;
+
+    const truncateLength = 200;
+    const shouldTruncate = text.length > truncateLength;
+    const displayText = !shouldTruncate || isExpanded ? text : text.slice(0, truncateLength) + '...';
+
+    const renderText = (content: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = content.split(urlRegex);
+        
+        return parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a 
+                        key={index} 
+                        href={part} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        style={{ color: 'var(--color-primary, #3b82f6)', textDecoration: 'underline' }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return <span key={index}>{part}</span>;
+        });
+    };
+
+    return (
+        <div style={{ 
+            fontSize: size === 'medium' ? '14px' : '12px', 
+            color: 'var(--color-gray-600)', 
+            marginTop: '8px', 
+            lineHeight: 1.6,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            width: '100%'
+        }}>
+            {renderText(displayText)}
+            {shouldTruncate && (
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsExpanded(!isExpanded);
+                    }}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--color-primary, #3b82f6)',
+                        cursor: 'pointer',
+                        fontSize: 'inherit',
+                        fontWeight: 600,
+                        marginLeft: isExpanded ? '0' : '8px',
+                        display: isExpanded ? 'block' : 'inline',
+                        marginTop: isExpanded ? '8px' : '0',
+                        padding: 0
+                    }}
+                >
+                    {isExpanded ? 'See less' : 'See more'}
+                </button>
+            )}
+        </div>
+    );
+};
+
 export default function Deliverables({ grant, myMembership }: { grant?: any, myMembership?: any }) {
     const roles = myMembership?.role || [];
     const isPI = roles.includes('Principal Investigator');
@@ -482,11 +552,7 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                                         {task.deliverableTitle}
                                     </div>
                                     <div style={{ fontSize: 'var(--text-md)', fontWeight: 600, color: 'var(--color-gray-900)' }}>{task.title}</div>
-                                    {task.description && (
-                                        <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-500)', marginTop: 'var(--space-2)', lineHeight: 1.5 }}>
-                                            {task.description}
-                                        </div>
-                                    )}
+                                    <TaskDescription text={task.description} size="medium" />
                                 </div>
 
                                 <div style={{
@@ -661,16 +727,16 @@ export default function Deliverables({ grant, myMembership }: { grant?: any, myM
                                                                         )}
                                                                         {!isAssigned && <div style={{ width: '18px' }} />}
 
-                                                                        <div>
+                                                                        <div style={{ width: '100%', flex: 1, minWidth: 0 }}>
                                                                             <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>{task.title}</div>
-                                                                            <div style={{ fontSize: '10px', color: 'var(--color-gray-400)' }}>
-                                                                                {task.description}
-                                                                                {task.action === 'Transaction' && (
-                                                                                    <span style={{ marginLeft: '8px', padding: '2px 6px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '4px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                                                            <TaskDescription text={task.description} size="small" />
+                                                                            {task.action === 'Transaction' && (
+                                                                                <div style={{ marginTop: '8px' }}>
+                                                                                    <span style={{ padding: '2px 6px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '4px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px' }}>
                                                                                         <Receipt size={10} /> Transaction
                                                                                     </span>
-                                                                                )}
-                                                                            </div>
+                                                                                </div>
+                                                                            )}
                                                                         </div>
                                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                                             <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
