@@ -31,3 +31,6 @@ dist
 .env.local
 .vite
 .DS_Store
+
+.vercel
+.env*.local

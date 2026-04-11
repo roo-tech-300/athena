@@ -1,12 +1,8 @@
 import axios from 'axios';
 
-const PAYSTACK_SECRET_KEY = import.meta.env.VITE_PAYSTACK_SECRET_KEY;
-const API_URL = 'https://api.paystack.co';
-
-export const paystack = axios.create({
-    baseURL: API_URL,
+const api = axios.create({
+    baseURL: '/api',
     headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
         'Content-Type': 'application/json',
     },
 });
@@ -17,22 +13,15 @@ export const paystack = axios.create({
  */
 export const initializeSubscription = async (email: string, planCode: string, departmentId?: string) => {
     try {
-        const callbackUrl = departmentId
-            ? `${window.location.origin}/department/${departmentId}`
-            : `${window.location.origin}/portal`;
-
-        const response = await paystack.post('/transaction/initialize', {
+        const response = await api.post('/paystack/init', {
             email,
-            amount: 15000, // This is overridden by the plan amount if the plan is set correctly
-            plan: planCode,
-            callback_url: callbackUrl, // Redirect back after payment
-            metadata: {
-                departmentId: departmentId,
-            },
+            planCode,
+            departmentId,
         });
-        return response.data.data; // Includes authorization_url and reference
-    } catch (error: any) {
-        console.error('Paystack Initialization Error:', error.response?.data || error.message);
+        return response.data; // Includes authorization_url and reference
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: unknown }; message?: string };
+        console.error('Paystack Initialization Error:', err.response?.data || err.message || error);
         throw error;
     }
 };
@@ -42,10 +31,13 @@ export const initializeSubscription = async (email: string, planCode: string, de
  */
 export const verifyTransaction = async (reference: string) => {
     try {
-        const response = await paystack.get(`/transaction/verify/${reference}`);
-        return response.data.data;
-    } catch (error: any) {
-        console.error('Paystack Verification Error:', error.response?.data || error.message);
+        const response = await api.get('/paystack/verify', {
+            params: { reference },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: unknown }; message?: string };
+        console.error('Paystack Verification Error:', err.response?.data || err.message || error);
         throw error;
     }
 };
@@ -55,13 +47,14 @@ export const verifyTransaction = async (reference: string) => {
  */
 export const cancelSubscription = async (subscriptionCode: string, emailToken: string) => {
     try {
-        const response = await paystack.post('/subscription/disable', {
-            code: subscriptionCode,
-            token: emailToken
+        const response = await api.post('/paystack/cancel', {
+            subscriptionCode,
+            emailToken,
         });
         return response.data;
-    } catch (error: any) {
-        console.error('Paystack Cancellation Error:', error.response?.data || error.message);
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: unknown }; message?: string };
+        console.error('Paystack Cancellation Error:', err.response?.data || err.message || error);
         throw error;
     }
 };

@@ -25,6 +25,7 @@ import { toast } from 'react-toastify'
 import { useAuth } from '../../../useContext/context'
 import { initializeSubscription, verifyTransaction } from '../../../lib/paystack/subscriptions'
 import { SUBSCRIPTION_PLANS } from '../../../constants/plans'
+import { queryClient } from '../../../lib/react-query'
 
 export default function DeptPage() {
     const { id } = useParams()
@@ -50,13 +51,10 @@ export default function DeptPage() {
                 try {
                     const data = await verifyTransaction(reference);
                     if (data.status === 'success') {
-                        await updateDept({
-                            deptId: id!,
-                            data: {
-                                subscriptionStatus: 'Active',
-                                Plan: 'Standard'
-                            }
-                        });
+                        // The server-side /api/paystack/verify already updated the database.
+                        // We just need to refresh our local state.
+                        queryClient.invalidateQueries({ queryKey: ["department", id] });
+                        
                         toast.success("Payment verified! Subscription activated.");
                         // Clean up URL
                         navigate(`/department/${id}`, { replace: true });
